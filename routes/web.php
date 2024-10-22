@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
@@ -6,15 +7,12 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 
-// Product routes: includes index and create views
+// Product routes: includes all CRUD (index, create, store, show, edit, update, destroy)
 Route::resource('products', ProductController::class);
 
-// Home route: show login if not authenticated, otherwise show products index
+// Home route: show login page if not authenticated, otherwise redirect to products index
 Route::get('/', function () {
-    if (Auth::check()) { // Use the Auth facade to check authentication status
-        return redirect()->route('products.index');
-    }
-    return view('auth.login');
+    return Auth::check() ? redirect()->route('products.index') : redirect()->route('login');
 })->name('home');
 
 // Welcome page, protected by auth middleware
