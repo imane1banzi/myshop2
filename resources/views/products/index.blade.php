@@ -26,13 +26,16 @@
                                     <!-- Product name-->
                                     <h5 class="fw-bolder">{{ $product->name }}</h5>
                                     <!-- Product price-->
-                                    <span>${{ number_format($product->price, 2) }}</span>
+                                    <span>{{ number_format($product->price, 2) }}MAD</span>
                                 </div>
                             </div>
                             <!-- Product actions-->
                             <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
                                 <div class="text-center">
                                     <a class="btn btn-outline-dark mt-auto" href="{{ route('products.show', $product->id) }}">Voir détails</a>
+                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
+                                        Add to Cart
+                                    </button>
                                     <!-- Edit button -->
                                     <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning mt-auto">Modifier</a>
                                     <!-- Delete button -->

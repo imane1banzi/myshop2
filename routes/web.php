@@ -5,6 +5,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 // Product routes: includes all CRUD (index, create, store, show, edit, update, destroy)
@@ -45,6 +46,12 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
+// Remove the first definition of Route::get('/') as it conflicts with the WelcomeController
+Route::get('/', [WelcomeController::class, 'welcome'])->name('home');
+
+// Welcome page, protected by auth middleware
+Route::get('/welcomepage', [WelcomeController::class, 'welcome'])->middleware(['auth', 'verified'])->name('welcomepage');
+
 
 // Include additional auth routes
 require __DIR__.'/auth.php';
