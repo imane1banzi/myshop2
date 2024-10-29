@@ -38,25 +38,38 @@
                 </ul>
                
                     
-                <button class="btn btn-outline-dark" href="javascript:;" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-                  <i class="bi-cart-fill me-1"></i>
-                  Cart
-                  <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
-              </button>
-              
-              <div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
-                  <div class="modal-dialog modal-xl">
-                      <div class="modal-content">
-                          <div class="modal-header">
-                              <h5 class="modal-title" id="shoppingCartModalLabel">Shopping Cart</h5>
-                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                          </div>
-                          <div class="modal-body" id="cartItemsContainer">
-                              <!-- Cart details will be populated dynamically with JavaScript -->
-                          </div>
-                      </div>
-                  </div>
-              </div>
+                <!-- Bouton du panier -->
+                <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
+                    <i class="bi-cart-fill me-1"></i>
+                    Cart
+                    <span class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                </button>
+                
+                <!-- Panier sophistiqué dans le modal -->
+                <div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header bg-dark text-white">
+                                <h5 class="modal-title" id="shoppingCartModalLabel">Shopping Cart</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="cartItemsContainer" class="row g-3">
+                                    <!-- Les détails du panier seront ajoutés ici dynamiquement avec JavaScript -->
+                                </div>
+                                <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
+                                    Total Price: MAD 0
+                                </div>
+                                <div class="d-flex justify-content-end mt-3">
+                                    <button class="btn btn-success me-2" onclick="applyDiscount()">Apply Discount</button>
+                                    <button class="btn btn-primary">Proceed to Checkout</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
                 
                 @if (Auth::check())
                 <form method="POST" action="{{ route('logout') }}" class="ms-3">
