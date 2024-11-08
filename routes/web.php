@@ -7,19 +7,16 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+use App\Models\Product;
 
 // Product routes: includes all CRUD (index, create, store, show, edit, update, destroy)
 Route::resource('products', ProductController::class);
 
-// Home route: show login page if not authenticated, otherwise redirect to products index
+// Home route: make the welcomepage the default landing page
 Route::get('/', function () {
-    return Auth::check() ? redirect()->route('products.index') : redirect()->route('login');
-})->name('home');
-
-// Welcome page, protected by auth middleware
-Route::get('/welcomepage', function () {
-    return view('welcomepage');
-})->middleware(['auth', 'verified'])->name('welcomepage');
+    $products = Product::all(); // Retrieve all products
+    return view('welcomepage', compact('products'));
+})->name('welcomepage');
 
 // Dashboard route, protected by auth middleware
 Route::get('/dashboard', function () {
@@ -46,12 +43,6 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
-// Remove the first definition of Route::get('/') as it conflicts with the WelcomeController
-Route::get('/', [WelcomeController::class, 'welcome'])->name('home');
-
-// Welcome page, protected by auth middleware
-Route::get('/welcomepage', [WelcomeController::class, 'welcome'])->middleware(['auth', 'verified'])->name('welcomepage');
-
 
 // Include additional auth routes
 require __DIR__.'/auth.php';

@@ -17,61 +17,60 @@
 </head>
 <body>
     @unless(request()->routeIs('login'))
-    <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container px-4 px-lg-5">
-            <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshop</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('welcomepage') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('products.index') }}">All Products</a></li>
-                            <li><hr class="dropdown-divider" /></li>
-                            <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                            <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
-                        </ul>
-                    </li>
-                </ul>
-               
-                    
-                <!-- Bouton du panier -->
-                <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-                    <i class="bi-cart-fill me-1"></i>
-                    Cart
-                    <span class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
-                </button>
-                
-                <!-- Panier sophistiqué dans le modal -->
-                <div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header bg-dark text-white">
-                                <h5 class="modal-title" id="shoppingCartModalLabel">Shopping Cart</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+ <!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('welcomepage') }}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{{ route('products.index') }}">All Products</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="#!">Popular Items</a></li>
+                        <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <!-- Cart Button -->
+            <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
+                <i class="bi-cart-fill me-1"></i>
+                Cart
+                <span class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+            </button>
+            
+            <!-- Cart Modal -->
+            <div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div class="modal-header bg-dark text-white">
+                            <h5 class="modal-title" id="shoppingCartModalLabel">Shopping Cart</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="cartItemsContainer" class="row g-3">
+                                <!-- Cart details will be added here dynamically with JavaScript -->
                             </div>
-                            <div class="modal-body">
-                                <div id="cartItemsContainer" class="row g-3">
-                                    <!-- Les détails du panier seront ajoutés ici dynamiquement avec JavaScript -->
-                                </div>
-                                <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
-                                    Total Price: MAD 0
-                                </div>
-                                <div class="d-flex justify-content-end mt-3">
-                                    <button class="btn btn-success me-2" onclick="applyDiscount()">Apply Discount</button>
-                                    <button class="btn btn-primary">Proceed to Checkout</button>
-                                </div>
+                            <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
+                                Total Price: MAD 0
+                            </div>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button class="btn btn-success me-2" onclick="applyDiscount()">Apply Discount</button>
+                                <button class="btn btn-primary">Proceed to Checkout</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+            </div>
 
-                
-                @if (Auth::check())
+            <!-- Authentication Buttons -->
+            @if (Auth::check())
+                <!-- Logout Button -->
                 <form method="POST" action="{{ route('logout') }}" class="ms-3">
                     @csrf
                     <button class="btn btn-outline-dark" type="submit">
@@ -79,10 +78,70 @@
                         Logout
                     </button>
                 </form>
+            @else
+                <!-- Login Button -->
+                <button class="btn btn-outline-dark ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    <i class="bi-box-arrow-in-right me-1"></i>
+                    Login
+                </button>
             @endif
+        </div>
+    </div>
+</nav>
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+
+                    <!-- Email Address -->
+                    <div class="mb-3">
+                        <input type="email" id="email" class="form-control" name="email" placeholder="Email" :value="old('email')" required autofocus autocomplete="username" />
+                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-3">
+                        <input type="password" id="password" class="form-control" name="password" placeholder="Password" required autocomplete="current-password" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="form-check mb-3">
+                        <input type="checkbox" class="form-check-input" id="remember_me" name="remember">
+                        <label class="form-check-label" for="remember_me">Remember me</label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100">Log In</button>
+                </form>
+
+                <!-- Forgot Password Link -->
+                <div class="text-center mt-3">
+                    @if (Route::has('password.request'))
+                        <a href="{{ route('password.request') }}" class="btn btn-link">Forgot Password?</a>
+                    @endif
+                </div>
+
+                <!-- Register Link -->
+                <div class="text-center mt-3">
+                    <a href="{{ route('register') }}" class="btn btn-link">Don't have an account? Register</a>
+                </div>
             </div>
         </div>
-    </nav>
+    </div>
+</div>
+
+
+
 
     @endunless
     
