@@ -25,7 +25,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('welcomepage') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -60,13 +60,25 @@
                                 Total Price: MAD 0
                             </div>
                             <div class="d-flex justify-content-end mt-3">
-                                <button class="btn btn-success me-2" onclick="applyDiscount()">Apply Discount</button>
-                                <button class="btn btn-primary">Proceed to Checkout</button>
+                                <!-- Promo Code Section -->
+                                <div class="mb-3">
+                                    <label for="promoCodeInput" class="form-label">Promo Code</label>
+                                    <div class="input-group">
+                                        <input type="text" id="promoCodeInput" class="form-control" placeholder="Enter promo code">
+                                        <button class="btn btn-success" onclick="applyPromoCode()">Apply</button>
+                                        <button class="btn btn-outline-danger" onclick="removePromoCode()" id="removePromoBtn" style="display: none;">Remove Promo Code</button>
+                                        <button class="btn btn-primary" onclick="proceedToCheckout()">Proceed to Checkout</button>
+                                    </div>
+                                    <small id="promoFeedback" class="form-text"></small>
+                                </div>
+                                
+                                
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
 
             <!-- Authentication Buttons -->
             @if (Auth::check())

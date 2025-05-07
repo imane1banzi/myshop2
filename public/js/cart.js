@@ -73,7 +73,57 @@ function removeFromCart(id) {
     updateTotalPrice();
 }
 
-function applyDiscount() {
-    discount = 0.1; // 10% de remise par exemple
+function applyPromoCode() {
+    const inputField = document.getElementById('promoCodeInput');
+    const input = inputField.value.trim().toUpperCase();
+    const feedback = document.getElementById('promoFeedback');
+    const applyButton = inputField.nextElementSibling;
+    const removeButton = document.getElementById('removePromoBtn');
+
+    const promoCodes = {
+        "SAVE10": 0.10,
+        "WELCOME15": 0.15,
+        "SPRING20": 0.20
+    };
+
+    if (discount > 0) {
+        feedback.textContent = "A promo code has already been applied.";
+        feedback.className = "form-text text-warning";
+        return;
+    }
+
+    if (promoCodes[input]) {
+        discount = promoCodes[input];
+        feedback.textContent = `Promo code applied: ${discount * 100}% discount.`;
+        feedback.className = "form-text text-success";
+        inputField.disabled = true;
+        applyButton.disabled = true;
+        removeButton.style.display = 'inline-block';
+        updateTotalPrice();
+    } else {
+        feedback.textContent = "Invalid promo code.";
+        feedback.className = "form-text text-danger";
+    }
+}
+
+function removePromoCode() {
+    const inputField = document.getElementById('promoCodeInput');
+    const feedback = document.getElementById('promoFeedback');
+    const applyButton = inputField.nextElementSibling;
+    const removeButton = document.getElementById('removePromoBtn');
+
+    discount = 0;
+    inputField.disabled = false;
+    inputField.value = '';
+    applyButton.disabled = false;
+    feedback.textContent = "Promo code removed.";
+    feedback.className = "form-text text-muted";
+    removeButton.style.display = 'none';
     updateTotalPrice();
+}
+
+
+function proceedToCheckout() {
+    localStorage.setItem('discount', discount); // stocke la remise active
+    window.location.href = "/checkout"; // redirige vers la page Laravel
 }

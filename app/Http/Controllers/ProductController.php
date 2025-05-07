@@ -147,4 +147,9 @@ class ProductController extends Controller
         // Redirect to the product list
         return redirect()->route('products.index');
     }
+    public function popularItems()
+    {
+        $popularProducts = Product::where('order_count', '>', 10)->get(); // Seuil de popularité
+        return view('products.popular', compact('popularProducts'));
+    }
 }

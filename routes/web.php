@@ -7,11 +7,16 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Models\Product;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 // Product routes: includes all CRUD (index, create, store, show, edit, update, destroy)
 Route::resource('products', ProductController::class);
-
+Route::get('/checkout', [OrderController::class, 'showCheckout'])->name('checkout');
+Route::post('/checkout', [OrderController::class, 'placeOrder'])->name('checkout.place');
+Route::get('/checkout-success', [OrderController::class, 'success'])->name('checkout.success');
 // Home route: make the welcomepage the default landing page
 Route::get('/', function () {
     $products = Product::all(); // Retrieve all products
@@ -43,6 +48,11 @@ Route::middleware(['guest'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
+
+
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
+
 
 // Include additional auth routes
 require __DIR__.'/auth.php';
