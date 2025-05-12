@@ -8,4 +8,11 @@
         <a href="{{ url('/') }}" class="btn btn-primary mt-3">Return to Shop</a>
     </div>
 </div>
+<script>
+    // Vider le panier du localStorage
+    localStorage.removeItem('cart');
+    localStorage.removeItem('promoCode'); // si tu utilises aussi un code promo
+
+    // Tu peux aussi forcer le rafraîchissement du panier sur d'autres pages
+</script>
 @endsection
