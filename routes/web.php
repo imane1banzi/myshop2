@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
-
+    Route::put('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
 
 // Include additional auth routes
 require __DIR__.'/auth.php';

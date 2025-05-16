@@ -19,4 +19,21 @@ class OrderController extends Controller
         $order = Order::with('items')->findOrFail($id);
         return view('orders.show', compact('order'));
     }
+    public function update(Request $request, $id)
+{
+    $order = Order::findOrFail($id);
+
+    $request->validate([
+        'status' => 'required|in:en attente,en cours,livrée,retour,problème',
+        'delivery_comment' => 'nullable|string',
+    ]);
+
+    $order->update([
+        'status' => $request->status,
+        'delivery_comment' => $request->delivery_comment,
+    ]);
+
+    return redirect()->back()->with('success', 'Commande mise à jour avec succès.');
+}
+
 }

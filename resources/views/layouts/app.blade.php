@@ -35,6 +35,7 @@
                         <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
                     </ul>
                 </li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">Orders</a></li>
             </ul>
             
             <!-- Cart Button -->

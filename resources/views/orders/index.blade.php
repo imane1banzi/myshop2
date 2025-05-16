@@ -11,7 +11,9 @@
                 <th>Email</th>
                 <th>Total</th>
                 <th>Date</th>
+                <th>Status livraison</th>
                 <th>Action</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -22,6 +24,7 @@
                 <td>{{ $order->email }}</td>
                 <td>MAD {{ number_format($order->total_price, 2) }}</td>
                 <td>{{ $order->created_at->format('Y-m-d H:i') }}</td>
+                <td>{{ $order->status }}</td>
                 <td>
                     <a href="{{ route('orders.show', $order->id) }}" class="btn btn-primary btn-sm">Details</a>
                 </td>
