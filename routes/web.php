@@ -54,5 +54,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
 
+    Route::get('/popular-items', [ProductController::class, 'popularItems'])->name('products.popular');
 // Include additional auth routes
 require __DIR__.'/auth.php';

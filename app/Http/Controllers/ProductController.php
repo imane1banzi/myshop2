@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Models\OrderItem;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -147,9 +149,16 @@ class ProductController extends Controller
         // Redirect to the product list
         return redirect()->route('products.index');
     }
-    public function popularItems()
-    {
-        $popularProducts = Product::where('order_count', '>', 10)->get(); // Seuil de popularité
-        return view('products.popular', compact('popularProducts'));
-    }
+   public function popularItems()
+{
+    // Récupérer les produits les plus vendus via la table order_items
+    $popularProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
+        ->groupBy('product_id')
+        ->orderByDesc('total_sold')
+        ->with('product') // Si relation définie
+        ->take(10)
+        ->get();
+
+    return view('products.popular', compact('popularProducts'));
+}
 }

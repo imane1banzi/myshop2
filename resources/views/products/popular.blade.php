@@ -1,38 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container my-4">
-        <h1>Produits Populaires</h1>
-    </div>
+<div class="container">
+    <h2>Produits les plus populaires</h2>
 
-    <section class="py-5">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="row gx-4 gx-lg-5 justify-content-center">
-                @foreach ($popularProducts as $product)
-                    <div class="col-md-3 mb-5">
-                        <div class="card h-100">
-                            @if($product->price < 50)
-                                <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-                            @endif
-                            <img class="card-img-top" src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" alt="{{ $product->name }}" />
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <h5 class="fw-bolder">{{ $product->name }}</h5>
-                                    <span>{{ number_format($product->price, 2) }} MAD</span>
-                                </div>
-                            </div>
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center">
-                                    <a class="btn btn-outline-dark mt-auto" href="{{ route('products.show', $product->id) }}">Voir détails</a>
-                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
-                                        Ajouter au panier
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+    <div class="row">
+        @foreach ($popularProducts as $item)
+        @php $product = $item->product; @endphp
+        @if($product)
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" class="card-img-top" alt="{{ $product->name }}" style="max-height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $product->name }}</h5>
+                    <p class="card-text">Prix : {{ number_format($product->price, 2) }} MAD</p>
+                    <p class="card-text"><small class="text-muted">Quantité vendue : {{ $item->total_sold }}</small></p>
+                </div>
             </div>
         </div>
-    </section>
+        @endif
+        @endforeach
+    </div>
+</div>
 @endsection
