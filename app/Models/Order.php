@@ -24,4 +24,10 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    // si tu as un modèle PromoCode
+public function promoCode()
+{
+    return $this->belongsTo(PromoCode::class, 'coupon_code', 'code');
+}
+
 }

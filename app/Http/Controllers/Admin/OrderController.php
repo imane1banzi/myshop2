@@ -32,9 +32,10 @@ public function update(Request $request, $id)
         'phone' => 'required|string|max:20',
         'status' => 'required|in:en attente,en cours,livrée,retour,problème',
         'delivery_comment' => 'nullable|string',
-        'items' => 'required|array',
+        'items' => 'required|array|min:1',
         'items.*.product_id' => 'required|exists:products,id',
         'items.*.quantity' => 'required|integer|min:1',
+        'coupon_code' => 'nullable|string|max:50',
     ]);
 
     // Mise à jour des informations de la commande
@@ -45,9 +46,10 @@ public function update(Request $request, $id)
         'phone' => $request->phone,
         'status' => $request->status,
         'delivery_comment' => $request->delivery_comment,
+        'coupon_code' => $request->coupon_code, // on enregistre directement le code
     ]);
 
-    // Supprimer tous les items existants pour les remplacer par les nouveaux
+    // Supprimer tous les items existants
     $order->items()->delete();
 
     $totalPrice = 0;
@@ -67,12 +69,31 @@ public function update(Request $request, $id)
         ]);
     }
 
-    // Mettre à jour le total de la commande
-    $order->total_price = $totalPrice;
+    // --- Gestion du code promo ---
+    $discountAmount = 0;
+    if ($request->coupon_code) {
+        $validCodes = [
+            'PROMO10' => 0.10, // 10% de remise
+            'PROMO20' => 0.20, // 20% de remise
+        ];
+
+        $code = strtoupper($request->coupon_code);
+        if (array_key_exists($code, $validCodes)) {
+            $discountAmount = $totalPrice * $validCodes[$code];
+        } else {
+            return redirect()->back()->withErrors(['coupon_code' => 'Code promo invalide.']);
+        }
+    }
+
+    // Mettre à jour le total final et le montant de la remise
+    $order->discount_amount = $discountAmount;
+    $order->total_price = $totalPrice - $discountAmount;
     $order->save();
 
     return redirect()->back()->with('success', 'Commande mise à jour avec succès.');
 }
+
+
 
 
 
