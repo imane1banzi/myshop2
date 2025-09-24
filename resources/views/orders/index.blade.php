@@ -2,7 +2,14 @@
 
 @section('content')
 <div class="container">
-    <h2>All Orders</h2>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>All Orders</h2>
+        {{-- Raccourci gestion des coupons --}}
+        <a href="{{ route('promo_codes.index') }}" class="btn btn-success">
+            <i class="bi bi-ticket-perforated"></i> Manage Coupons
+        </a>
+    </div>
+
     <table class="table table-bordered">
         <thead>
             <tr>
@@ -13,7 +20,6 @@
                 <th>Date</th>
                 <th>Status livraison</th>
                 <th>Action</th>
-                
             </tr>
         </thead>
         <tbody>
@@ -32,6 +38,7 @@
             @endforeach
         </tbody>
     </table>
+
     {{ $orders->links() }}
 </div>
 @endsection

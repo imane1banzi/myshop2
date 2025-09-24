@@ -47,19 +47,36 @@
         {{-- Champ Code Promo --}}
         <div class="mb-3">
             <label class="form-label">Promo Code</label>
-            <input type="text" name="coupon_code" id="promo_code" class="form-control" value="{{ old('coupon_code', $order->coupon_code) }}">
+            <select name="coupon_code" id="promo_code" class="form-select">
+                <option value="">-- Aucun --</option>
+                @foreach($promoCodes as $promo)
+                    <option value="{{ $promo->code }}" 
+                        data-type="{{ $promo->type }}" 
+                        data-value="{{ $promo->value }}"
+                        {{ old('coupon_code', $order->coupon_code) === $promo->code ? 'selected' : '' }}>
+                        {{ $promo->code }} 
+                        ({{ $promo->type == 'percent' ? $promo->value.'%' : $promo->value.' MAD' }})
+                    </option>
+                @endforeach
+            </select>
         </div>
 
+        {{-- Champ Prix total --}}
         <div class="mb-3">
             <label class="form-label">Total Price (MAD)</label>
-            <input type="number" step="0.01" name="total_price" id="total_price_input" class="form-control" value="{{ old('total_price', $order->total_price) }}" required>
+            <input type="number" step="0.01"
+       id="total_price_input"
+       name="total_price"
+       class="form-control"
+       value="{{ $order->total_price }}"
+       readonly>
         </div>
 
         {{-- Affichage total et remise --}}
         <div class="mt-3 text-end">
             <div><strong>Total: MAD <span id="totalPriceDisplay">{{ number_format($order->total_price, 2) }}</span></strong></div>
-            <div class="text-success" id="discountDisplay" style="display:none;">
-                Réduction appliquée: -<span id="discountAmount">0.00</span> MAD
+            <div class="text-success" id="discountDisplay" style="{{ $order->discount_amount > 0 ? '' : 'display:none;' }}">
+                Réduction appliquée: -<span id="discountAmount">{{ number_format($order->discount_amount, 2) }}</span> MAD
             </div>
         </div>
 
@@ -175,14 +192,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         discount = 0;
-        // exemple: appliquer code promo PROMO10 = 10% de remise
-        if (promoInput.value.trim().toUpperCase() === "PROMO10") {
-            discount = total * 0.1;
+        const promoOption = promoInput.selectedOptions[0];
+        if (promoOption && promoOption.value !== "") {
+            const type = promoOption.dataset.type;
+            const value = parseFloat(promoOption.dataset.value);
+
+            if (type === "percent") {
+                discount = total * (value / 100);
+            } else if (type === "fixed") {
+                discount = value;
+            }
         }
 
-        total -= discount;
+        total = Math.max(total - discount, 0);
         totalPriceDisplay.textContent = total.toFixed(2);
-        totalPriceInput.value = total.toFixed(2);
+       
 
         if (discount > 0) {
             discountDisplay.style.display = "block";
@@ -223,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateSubtotal(tr);
     });
 
-    promoInput.addEventListener('input', updateTotal);
+    promoInput.addEventListener('change', updateTotal);
     document.querySelector('form').addEventListener('submit', updateTotal);
 });
 </script>
