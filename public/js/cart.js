@@ -1,5 +1,6 @@
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 let discount = 0;
+let promoCodes = []; 
 
 function addToCart(id, name, price, image) {
     const product = cart.find(item => item.id === id);
@@ -72,38 +73,61 @@ function removeFromCart(id) {
     updateCartCount();
     updateTotalPrice();
 }
+async function loadPromoCodes() {
+    try {
+        const response = await fetch('/api/promo-codes');
+        promoCodes = await response.json(); // stocker les codes promo
+    } catch (error) {
+        console.error("Erreur lors du chargement des codes promo :", error);
+    }
+}
+loadPromoCodes();
 
-function applyPromoCode() {
+async function applyPromoCode() {
     const inputField = document.getElementById('promoCodeInput');
     const input = inputField.value.trim().toUpperCase();
     const feedback = document.getElementById('promoFeedback');
     const applyButton = inputField.nextElementSibling;
     const removeButton = document.getElementById('removePromoBtn');
 
-    const promoCodes = {
-        "SAVE10": 0.10,
-        "WELCOME15": 0.15,
-        "SPRING20": 0.20
-    };
-
+    // Promo déjà appliquée ?
     if (discount > 0) {
         feedback.textContent = "A promo code has already been applied.";
         feedback.className = "form-text text-warning";
         return;
     }
 
-    if (promoCodes[input]) {
-        discount = promoCodes[input];
-        feedback.textContent = `Promo code applied: ${discount * 100}% discount.`;
-        feedback.className = "form-text text-success";
-        inputField.disabled = true;
-        applyButton.disabled = true;
-        removeButton.style.display = 'inline-block';
-        updateTotalPrice();
-    } else {
+    // Chercher le code promo dans la liste chargée
+    const promo = promoCodes.find(p => p.code.toUpperCase() === input);
+
+    if (!promo) {
         feedback.textContent = "Invalid promo code.";
         feedback.className = "form-text text-danger";
+        return;
     }
+
+    // Vérifier expiration
+    if (promo.expires_at && new Date(promo.expires_at) < new Date()) {
+        feedback.textContent = "This promo code has expired.";
+        feedback.className = "form-text text-danger";
+        return;
+    }
+
+    // Appliquer réduction
+    if (promo.type === "percent") {
+        discount = promo.value / 100;
+    } else if (promo.type === "fixed") {
+        discount = promo.value; // réduction fixe en MAD
+    }
+
+    feedback.textContent = `Promo code applied successfully.`;
+    feedback.className = "form-text text-success";
+
+    inputField.disabled = true;
+    applyButton.disabled = true;
+    removeButton.style.display = 'inline-block';
+
+    updateTotalPrice();
 }
 
 function removePromoCode() {

@@ -11,6 +11,10 @@ class PromoCodeController extends Controller
         $promoCodes = PromoCode::all();
         return view('promo_codes.index', compact('promoCodes'));
     }
+    public function getPromoCodes()
+{
+    return response()->json(PromoCode::all());
+}
 
     public function create()
     {

@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 });
 Route::resource('promo_codes', PromoCodeController::class);
+Route::get('/api/promo-codes', [PromoCodeController::class, 'getPromoCodes']);
 
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
