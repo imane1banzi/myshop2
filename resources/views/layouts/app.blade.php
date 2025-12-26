@@ -32,7 +32,7 @@
                         <li><a class="dropdown-item" href="{{ route('products.index') }}">All Products</a></li>
                         <li><hr class="dropdown-divider" /></li>
                         <li><a class="dropdown-item" href="{{ route('products.popular') }}">Popular Items</a></li>
-                        <li><a class="dropdown-item" href="#!">New Arrivals</a></li>
+                        <li><a class="dropdown-item" href="{{ route('products.new-arrivals') }}">New Arrivals</a></li>
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">Orders</a></li>

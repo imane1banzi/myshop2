@@ -57,5 +57,7 @@ Route::get('/api/promo-codes', [PromoCodeController::class, 'getPromoCodes']);
     Route::put('/orders/{id}', [AdminOrderController::class, 'update'])->name('orders.update');
 
     Route::get('/popular-items', [ProductController::class, 'popularItems'])->name('products.popular');
+    Route::get('/new-arrivals', [ProductController::class, 'newArrivals'])
+    ->name('products.new-arrivals');
 // Include additional auth routes
 require __DIR__.'/auth.php';

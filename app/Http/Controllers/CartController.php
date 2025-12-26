@@ -9,4 +9,5 @@ class CartController extends Controller
         $products = Product::all();
         return view('orders.cart', compact('products'));
     }
+ 
 }

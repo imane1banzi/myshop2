@@ -161,4 +161,20 @@ class ProductController extends Controller
 
     return view('products.popular', compact('popularProducts'));
 }
+public function newArrivals(Request $request)
+{
+    // Nombre de produits par page (5 par défaut)
+    $perPage = $request->get('per_page', 5);
+
+    // Sécurité : valeurs autorisées
+    if (!in_array($perPage, [5, 10, 15])) {
+        $perPage = 5;
+    }
+
+    $newArrivals = Product::orderBy('created_at', 'desc')
+        ->paginate($perPage)
+        ->withQueryString(); // garde les paramètres dans la pagination
+
+    return view('products.new-arrivals', compact('newArrivals', 'perPage'));
+}
 }
