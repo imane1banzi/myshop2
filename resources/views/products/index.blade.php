@@ -30,22 +30,43 @@
                                 </div>
                             </div>
                             <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center">
-                                    <a class="btn btn-outline-dark mt-auto" href="{{ route('products.show', $product->id) }}">Voir détails</a>
-                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
-                                        Add to Cart
-                                    </button>
-                                    <!-- Edit button -->
-                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning mt-auto">Modifier</a>
-                                    <!-- Delete button -->
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger mt-auto">Supprimer</button>
-                                    </form>
-                                </div>
-                            </div>
+                         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+
+    <!-- Actions client -->
+    <div class="d-grid gap-2 mb-3">
+        <a href="{{ route('products.show', $product->id) }}"
+           class="btn btn-outline-dark rounded-pill">
+            <i class="bi bi-eye"></i> Voir les détails
+        </a>
+
+        <button
+            class="btn btn-success rounded-pill fw-semibold"
+            onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
+            <i class="bi bi-cart-plus"></i> Ajouter au panier
+        </button>
+    </div>
+
+    <!-- Actions administrateur -->
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ route('products.edit', $product->id) }}"
+           class="btn btn-outline-primary btn-sm rounded-pill">
+            <i class="bi bi-pencil"></i> Modifier
+        </a>
+
+        <form action="{{ route('products.destroy', $product->id) }}"
+              method="POST"
+              onsubmit="return confirm('Supprimer ce produit ?')">
+            @csrf
+            @method('DELETE')
+
+            <button type="submit"
+                    class="btn btn-outline-danger btn-sm rounded-pill">
+                <i class="bi bi-trash"></i> Supprimer
+            </button>
+        </form>
+    </div>
+
+</div>
                         </div>
                     </div>
                     @endforeach
