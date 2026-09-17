@@ -1,0 +1,63 @@
+# Render Blueprint : https://render.com/docs/blueprint-spec
+# New > Blueprint > connecter le repo. Render crée le Web Service + la DB Postgres.
+services:
+  - type: web
+    name: myshope
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    # Disque persistant OBLIGATOIRE sinon photos produits perdues à chaque redeploy
+    disk:
+      name: myshope-storage
+      mountPath: /var/www/html/storage/app/public
+      sizeGB: 1
+    envVars:
+      - key: APP_NAME
+        value: Myshope
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        fromService:
+          type: web
+          name: myshope
+          property: host
+          # Render génère https://myshope.onrender.com — mettre à jour après 1er deploy
+      - key: APP_KEY
+        generateValue: true # base64:xxx généré par Render, ne pas committer
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        fromDatabase:
+          name: myshope-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: myshope-db
+          property: port
+      - key: DB_DATABASE
+        fromDatabase:
+          name: myshope-db
+          property: databaseName
+      - key: DB_USERNAME
+        fromDatabase:
+          name: myshope-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: myshope-db
+          property: password
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: public
+
+databases:
+  - name: myshope-db
+    plan: free
+    postgresMajorVersion: 16
