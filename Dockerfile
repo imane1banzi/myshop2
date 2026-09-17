@@ -12,10 +12,15 @@ COPY vite.config.js tailwind.config.js postcss.config.js ./
 RUN npm run build
 
 # ---------- Étape 2 : dépendances PHP ----------
-FROM composer:2 AS vendor
+# Base PHP 8.2 (même version que prod) + Composer : évite les mismatch de platform
+FROM php:8.2-cli AS vendor
+RUN apt-get update && apt-get install -y --no-install-recommends git curl zip unzip libzip-dev \
+ && docker-php-ext-install zip \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 WORKDIR /app
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist --optimize-autoloader
+RUN composer install --no-dev --no-interaction --no-plugins --no-scripts --prefer-dist --optimize-autoloader --ignore-platform-reqs
 
 # ---------- Étape 3 : image finale ----------
 FROM php:8.2-apache
