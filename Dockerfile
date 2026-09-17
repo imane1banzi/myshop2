@@ -32,12 +32,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  && a2enmod rewrite \
  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Apache : DocumentRoot = public/ + écoute sur $PORT de Render
+# Apache : DocumentRoot = public/. Le port $PORT est injecté au démarrage
+# par docker-entrypoint.sh (Apache ne comprend pas ${PORT:-80}).
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
  && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf \
- && printf 'Listen ${PORT:-80}\n' > /etc/apache2/ports.conf \
- && printf '<VirtualHost *:${PORT:-80}>\n\tDocumentRoot ${APACHE_DOCUMENT_ROOT}\n\t<Directory ${APACHE_DOCUMENT_ROOT}>\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>\n\tErrorLog ${APACHE_LOG_DIR}/error.log\n\tCustomLog ${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
+ && printf 'Listen 80\n' > /etc/apache2/ports.conf \
+ && printf '<VirtualHost *:80>\n\tDocumentRoot ${APACHE_DOCUMENT_ROOT}\n\t<Directory ${APACHE_DOCUMENT_ROOT}>\n\t\tAllowOverride All\n\t\tRequire all granted\n\t</Directory>\n\tErrorLog ${APACHE_LOG_DIR}/error.log\n\tCustomLog ${APACHE_LOG_DIR}/access.log combined\n</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
