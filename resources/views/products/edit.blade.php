@@ -24,10 +24,13 @@
         </div>
         
         <div class="mb-3">
-            <label for="image" class="form-label">Image du produit</label>
-            <input type="file" class="form-control" id="image" name="image">
+            <label for="image" class="form-label">Image du produit — fond blanc, 800x800px, JPG/PNG &lt; 2Mo</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/jpeg,image/png,image/webp">
+            <div class="form-text">Laissez vide pour garder la photo actuelle. Pour remplacer : choisissez une photo fond blanc.</div>
             @if($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid mt-2" style="width: 150px;">
+                <div class="bg-white border d-inline-block p-2 mt-2">
+                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 200px; height: 200px; object-fit: contain;">
+                </div>
             @endif
         </div>
         

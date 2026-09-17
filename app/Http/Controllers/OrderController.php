@@ -64,4 +64,30 @@ class OrderController extends Controller
     {
         return view('orders.success');
     }
+
+    /**
+     * Historique des commandes du client authentifié.
+     * Guest => redirigé vers login par le middleware 'auth'.
+     */
+    public function myOrders()
+    {
+        $orders = Order::with('items')
+            ->where('user_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+
+        return view('orders.my-orders', compact('orders'));
+    }
+
+    /**
+     * Détail d'une commande appartenant au client.
+     */
+    public function myShow($id)
+    {
+        $order = Order::with('items')
+            ->where('user_id', Auth::id())
+            ->findOrFail($id);
+
+        return view('orders.my-show', compact('order'));
+    }
 }

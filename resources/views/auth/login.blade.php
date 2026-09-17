@@ -135,7 +135,7 @@
         <div class="fadeIn first">
             <div class="icon-header">
                 <img src="{{ asset('images/869636.png') }}" id="icon" alt="User Icon" />
-                <h3>Welcome to MyShop</h3>
+                <h3>Welcome to Myshope</h3>
             </div>
         </div>
 

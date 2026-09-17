@@ -19,8 +19,9 @@
             <input type="number" class="form-control" id="price" name="price" required>
         </div>
         <div class="mb-3">
-            <label for="image" class="form-label">Image du produit</label>
-            <input type="file" class="form-control" id="image" name="image">
+            <label for="image" class="form-label">Image du produit — fond blanc, 800x800px, JPG/PNG &lt; 2Mo</label>
+            <input type="file" class="form-control" id="image" name="image" accept="image/jpeg,image/png,image/webp">
+            <div class="form-text">Conseil visibilité : fond blanc pur (#FFFFFF), produit centré, lumière naturelle, sans ombre dure.</div>
         </div>
         <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary btn-block">Ajouter</button>

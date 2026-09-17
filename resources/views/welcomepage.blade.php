@@ -11,15 +11,25 @@
                         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
                         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
                     </div>
-                    <div class="carousel-inner">
+                    <div class="carousel-inner rounded shadow">
                         <div class="carousel-item active">
-                            <img src="../images/couverture.png" class="d-block w-100" alt="...">
+                            <a href="{{ route('products.index') }}" class="d-block position-relative text-decoration-none">
+                                <img src="{{ asset('images/couv4.png') }}" class="d-block w-100" alt="My Shope - Des bijoux qui subliment votre style">
+                                {{-- Zone cliquable sur le bouton DÉCOUVRIR incrusté en bas à droite --}}
+                                <span style="position:absolute; right:3%; bottom:6%; width:24%; height:14%; cursor:pointer;" aria-hidden="true"></span>
+                            </a>
                         </div>
                         <div class="carousel-item">
-                            <img src="../images/couverture.png" class="d-block w-100" alt="...">
+                            <a href="{{ route('products.index') }}" class="d-block position-relative text-decoration-none">
+                                <img src="{{ asset('images/couv6.jpg') }}" class="d-block w-100" alt="My Shope - Elegance et raffinement">
+                                {{-- Zone cliquable sur le bouton DÉCOUVRIR incrusté --}}
+                                <span style="position:absolute; right:3%; bottom:6%; width:24%; height:14%; cursor:pointer;" aria-hidden="true"></span>
+                            </a>
                         </div>
                         <div class="carousel-item">
-                            <img src="../images/couverture.png" class="d-block w-100" alt="...">
+                            <a href="{{ route('products.index') }}" class="d-block text-decoration-none">
+                                <img src="{{ asset('images/couv5.jpg') }}" class="d-block w-100" alt="Myshope - Collection exclusive">
+                            </a>
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
@@ -35,23 +45,19 @@
         </div>
     </header>
 
-    <!-- About Section -->
-    <section id="about" class="py-5 bg-light">
+    <!-- About Section : aperçu, page complète sur /about -->
+    <section id="about-preview" class="py-5 bg-light">
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center">
-                <h2 class="fw-bolder">About Us</h2>
-                <p class="lead text-muted">Discover the finest accessories to complement your lifestyle.</p>
+                <p class="text-uppercase text-muted mb-1" style="letter-spacing: 3px;">Myshope — Jewelry Shop</p>
+                <h2 class="fw-bolder">Des bijoux qui racontent votre histoire</h2>
+                <p class="lead text-muted">Bagues torsadées, colliers dorés, éclat garanti.</p>
                 <p>
-                    Welcome to our e-commerce platform, your one-stop destination for high-quality, stylish accessories. 
-                    We are committed to offering a curated selection of products that cater to your unique tastes and needs. 
-                    Whether you're searching for the latest fashion trends, practical everyday items, or special gifts for loved ones, 
-                    our store has something for everyone.
+                    Bienvenue chez <strong>Myshope</strong> : des bijoux délicats en plaqué or,
+                    sertis de zircons, photographiés en fond blanc HD pour voir chaque détail.
+                    Livraison rapide au Maroc, paiement à la livraison, échange sous 7 jours.
                 </p>
-                <p>
-                    Our mission is to provide an enjoyable shopping experience by combining quality products with exceptional service. 
-                    We pride ourselves on competitive pricing, fast shipping, and a customer-centric approach. Thank you for choosing us, 
-                    and we look forward to serving you!
-                </p>
+                <a href="{{ route('about') }}" class="btn btn-dark rounded-pill px-4 mt-2">Découvrir notre histoire</a>
             </div>
         </div>
     </section>
@@ -63,8 +69,10 @@
                 @foreach ($products as $product)
                     <div class="col mb-5">
                         <div class="card h-100">
-                            <!-- Product image -->
-                            <img class="card-img-top" src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" alt="{{ $product->name }}" />
+                            <!-- Product image : fond blanc uniforme -->
+                            <div class="bg-white d-flex align-items-center justify-content-center p-3" style="height: 280px; overflow: hidden;">
+                                <img style="max-height: 100%; max-width: 100%; object-fit: contain;" src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" alt="{{ $product->name }}" loading="lazy" />
+                            </div>
                             <!-- Product details -->
                             <div class="card-body p-4">
                                 <div class="text-center">
@@ -81,7 +89,7 @@
                                     <a class="btn btn-outline-dark mt-auto" style="margin-bottom: 10px" href="{{ route('products.show', $product->id) }}">View options</a>
                                     
                                     <!-- Add to Cart button with an encouraging color -->
-                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ $product->name }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
+                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
                                         Add to Cart
                                     </button>
                                 </div>

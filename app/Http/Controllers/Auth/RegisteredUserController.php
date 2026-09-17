@@ -39,12 +39,15 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            // Sécurité : on ne lit JAMAIS $request->role.
+            // Toute inscription publique => profil client d'office.
+            'role' => 'client',
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('welcomepage', absolute: false));
     }
 }

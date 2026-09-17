@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>MyShop</title>
+    <title>Myshope</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/favicon.ico') }}">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,12 +20,12 @@
  <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshop</a>
+        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshope</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('welcomepage') }}">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('about') }}">About</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Shop</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -35,8 +35,16 @@
                         <li><a class="dropdown-item" href="{{ route('products.new-arrivals') }}">New Arrivals</a></li>
                     </ul>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('orders.index') }}">Orders</a></li>
-            </ul>
+                {{-- ADMIN : accès à tout --}}
+                @auth
+                    @if(auth()->user()->isAdmin())
+                        <li class="nav-item"><a class="nav-link fw-bold text-danger" href="{{ route('orders.index') }}">Orders</a></li>
+                        <li class="nav-item"><a class="nav-link fw-bold text-danger" href="{{ route('promo_codes.index') }}">Coupons</a></li>
+                    @else
+                        {{-- CLIENT AUTHENTIFIÉ : historique personnel --}}
+                        <li class="nav-item"><a class="nav-link" href="{{ route('my-orders.index') }}">Mes commandes</a></li>
+                    @endif
+                @endauth
             
             <!-- Cart Button -->
             <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
@@ -83,6 +91,12 @@
 
             <!-- Authentication Buttons -->
             @if (Auth::check())
+                {{-- Client : son nom / Admin : son nom + Admin --}}
+                @if(auth()->user()->isAdmin())
+                    <span class="badge bg-danger ms-3">{{ auth()->user()->name }} — Admin</span>
+                @else
+                    <span class="badge bg-success ms-3">{{ auth()->user()->name }}</span>
+                @endif
                 <!-- Logout Button -->
                 <form method="POST" action="{{ route('logout') }}" class="ms-3">
                     @csrf
@@ -92,6 +106,7 @@
                     </button>
                 </form>
             @else
+                {{-- Invité : rien, juste Login --}}
                 <!-- Login Button -->
                 <button class="btn btn-outline-dark ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">
                     <i class="bi-box-arrow-in-right me-1"></i>
@@ -164,10 +179,23 @@
         @yield('content')
     </main>
     @unless(request()->routeIs('login'))
-    <!-- Footer -->
+    <!-- Footer visible sur tout le site -->
     <footer class="py-5 bg-dark">
         <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; MyShop 2023</p>
+            <div class="row text-white-50 small">
+                <div class="col-md-4 mb-3">
+                    <h6 class="text-white">Myshope</h6>
+                    <p class="mb-0">Bijoux délicats en plaqué or.<br>Livraison partout au Maroc.</p>
+                </div>
+                <div class="col-md-4 mb-3 text-center">
+                    <a href="{{ route('about') }}" class="text-white text-decoration-none me-3">About</a>
+                    <a href="{{ route('products.index') }}" class="text-white text-decoration-none me-3">Shop</a>
+                    <a href="{{ route('checkout') }}" class="text-white text-decoration-none">Panier</a>
+                </div>
+                <div class="col-md-4 mb-3 text-md-end">
+                    <p class="m-0">Copyright &copy; Myshope 2024</p>
+                </div>
+            </div>
         </div>
     </footer>
     @endunless
