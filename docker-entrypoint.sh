@@ -19,4 +19,9 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-exec apache2-foreground
+# Si Render passe un Start Command en argument, l'exécuter, sinon Apache
+if [ $# -gt 0 ]; then
+  exec "$@"
+else
+  exec apache2-foreground
+fi
