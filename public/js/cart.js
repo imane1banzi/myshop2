@@ -1,6 +1,20 @@
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
+let cart = [];
+try {
+    cart = JSON.parse(localStorage.getItem('cart')) || [];
+} catch (e) {
+    console.warn('Panier localStorage illisible, réinitialisé.', e);
+    cart = [];
+}
 let discount = 0;
-let promoCodes = []; 
+let promoCodes = [];
+
+function saveCart() {
+    try {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    } catch (e) {
+        console.warn('Sauvegarde panier impossible.', e);
+    }
+} 
 
 function addToCart(id, name, price, image) {
     const product = cart.find(item => item.id === id);
@@ -9,27 +23,31 @@ function addToCart(id, name, price, image) {
     } else {
         cart.push({ id, name, price, image, quantity: 1 });
     }
-    localStorage.setItem('cart', JSON.stringify(cart));
+    saveCart();
     updateCartCount();
     updateTotalPrice();
 }
 
 function updateCartCount() {
-    const cartBadge = document.querySelector('.badge');
+    const cartBadge = document.getElementById('cartCountBadge');
+    if (!cartBadge) return;
     const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
     cartBadge.textContent = totalQuantity;
 }
 
 function updateTotalPrice() {
+    const el = document.getElementById('totalPriceContainer');
+    if (!el) return;
     const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0) * (1 - discount);
-    document.getElementById('totalPriceContainer').textContent = `Total Price: MAD ${totalPrice.toFixed(2)}`;
+    el.textContent = `Total Price: MAD ${totalPrice.toFixed(2)}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     updateTotalPrice();
+    const trigger = document.getElementById('cartModalTrigger');
+    if (trigger) trigger.addEventListener('click', showCartItems);
 });
-document.getElementById('cartModalTrigger').addEventListener('click', showCartItems);
 
 function showCartItems() {
     const cartItemsContainer = document.getElementById('cartItemsContainer');
@@ -60,7 +78,7 @@ function updateQuantity(id, quantity) {
     const product = cart.find(item => item.id === id);
     if (product) {
         product.quantity = parseInt(quantity, 10);
-        localStorage.setItem('cart', JSON.stringify(cart));
+        saveCart();
         updateCartCount();
         showCartItems();
     }
@@ -68,7 +86,7 @@ function updateQuantity(id, quantity) {
 
 function removeFromCart(id) {
     cart = cart.filter(item => item.id !== id);
-    localStorage.setItem('cart', JSON.stringify(cart));
+    saveCart();
     showCartItems();
     updateCartCount();
     updateTotalPrice();

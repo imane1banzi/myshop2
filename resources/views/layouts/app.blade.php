@@ -50,7 +50,7 @@
             <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
                 <i class="bi-cart-fill me-1"></i>
                 Cart
-                <span class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                <span id="cartCountBadge" class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
             </button>
             
             <!-- Cart Modal -->
