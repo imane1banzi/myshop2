@@ -3,19 +3,19 @@
 @section('content')
 <div class="container py-5">
     <div class="text-center mb-5">
-        <p class="text-uppercase text-muted mb-1" style="letter-spacing: 3px;">Myshope — Jewelry Shop</p>
+        <p class="text-uppercase text-muted mb-1" style="letter-spacing: 3px;">Myshop</p>
         <h1 class="fw-bolder">Notre Histoire</h1>
         <p class="lead text-muted">Des bijoux délicats pour sublimer votre quotidien.</p>
     </div>
 
     <div class="row align-items-center g-5">
         <div class="col-md-6">
-            <img src="{{ asset('images/couv3.jpg') }}" class="img-fluid rounded shadow" alt="Myshope bijoux">
+            <img src="{{ asset('images/couv5.png') }}" class="img-fluid rounded shadow" alt="Myshop bijoux">
         </div>
         <div class="col-md-6">
             <h3 class="fw-bold mb-3">L'éclat, sans compromis</h3>
             <p>
-                Bienvenue chez <strong>Myshope</strong>, votre destination bijoux au Maroc.
+                Bienvenue chez <strong>Myshop</strong>, votre destination bijoux au Maroc.
                 Nous sélectionnons des pièces intemporelles : bagues torsadées en plaqué or,
                 colliers chaînes dorées, bracelets et boucles — sertis de zircons éclatants.
             </p>

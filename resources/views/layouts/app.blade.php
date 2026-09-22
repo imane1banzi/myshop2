@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Myshope</title>
+    <title>Myshop</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/favicon.ico') }}">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
  <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshope</a>
+        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
@@ -184,7 +184,7 @@
         <div class="container">
             <div class="row text-white-50 small">
                 <div class="col-md-4 mb-3">
-                    <h6 class="text-white">Myshope</h6>
+                    <h6 class="text-white">Myshop</h6>
                     <p class="mb-0">Bijoux délicats en plaqué or.<br>Livraison partout au Maroc.</p>
                 </div>
                 <div class="col-md-4 mb-3 text-center">
@@ -193,7 +193,7 @@
                     <a href="{{ route('checkout') }}" class="text-white text-decoration-none">Panier</a>
                 </div>
                 <div class="col-md-4 mb-3 text-md-end">
-                    <p class="m-0">Copyright &copy; Myshope 2024</p>
+                    <p class="m-0">Copyright &copy; Myshop 2024</p>
                 </div>
             </div>
         </div>

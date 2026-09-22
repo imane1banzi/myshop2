@@ -14,21 +14,21 @@
                     <div class="carousel-inner rounded shadow">
                         <div class="carousel-item active">
                             <a href="{{ route('products.index') }}" class="d-block position-relative text-decoration-none">
-                                <img src="{{ asset('images/couv4.png') }}" class="d-block w-100" alt="My Shope - Des bijoux qui subliment votre style">
+                                <img src="{{ asset('images/couv4.png') }}" class="d-block w-100" alt="Myshop - Des bijoux qui subliment votre style">
                                 {{-- Zone cliquable sur le bouton DÉCOUVRIR incrusté en bas à droite --}}
                                 <span style="position:absolute; right:3%; bottom:6%; width:24%; height:14%; cursor:pointer;" aria-hidden="true"></span>
                             </a>
                         </div>
                         <div class="carousel-item">
                             <a href="{{ route('products.index') }}" class="d-block position-relative text-decoration-none">
-                                <img src="{{ asset('images/couv6.jpg') }}" class="d-block w-100" alt="My Shope - Elegance et raffinement">
+                                <img src="{{ asset('images/couv6.jpg') }}" class="d-block w-100" alt="Myshop - Elegance et raffinement">
                                 {{-- Zone cliquable sur le bouton DÉCOUVRIR incrusté --}}
                                 <span style="position:absolute; right:3%; bottom:6%; width:24%; height:14%; cursor:pointer;" aria-hidden="true"></span>
                             </a>
                         </div>
                         <div class="carousel-item">
                             <a href="{{ route('products.index') }}" class="d-block text-decoration-none">
-                                <img src="{{ asset('images/couv5.jpg') }}" class="d-block w-100" alt="Myshope - Collection exclusive">
+                                <img src="{{ asset('images/couv5.png') }}" class="d-block w-100" alt="Myshop - Collection exclusive">
                             </a>
                         </div>
                     </div>
@@ -49,11 +49,11 @@
     <section id="about-preview" class="py-5 bg-light">
         <div class="container px-4 px-lg-5 my-5">
             <div class="text-center">
-                <p class="text-uppercase text-muted mb-1" style="letter-spacing: 3px;">Myshope — Jewelry Shop</p>
+                <p class="text-uppercase text-muted mb-1" style="letter-spacing: 3px;">Myshop</p>
                 <h2 class="fw-bolder">Des bijoux qui racontent votre histoire</h2>
                 <p class="lead text-muted">Bagues torsadées, colliers dorés, éclat garanti.</p>
                 <p>
-                    Bienvenue chez <strong>Myshope</strong> : des bijoux délicats en plaqué or,
+                    Bienvenue chez <strong>Myshop</strong> : des bijoux délicats en plaqué or,
                     sertis de zircons, photographiés en fond blanc HD pour voir chaque détail.
                     Livraison rapide au Maroc, paiement à la livraison, échange sous 7 jours.
                 </p>
