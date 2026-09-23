@@ -29,7 +29,7 @@
             <div class="form-text">Laissez vide pour garder la photo actuelle. Pour remplacer : choisissez une photo fond blanc.</div>
             @if($product->image)
                 <div class="bg-white border d-inline-block p-2 mt-2">
-                    <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" style="width: 200px; height: 200px; object-fit: contain;">
+                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" style="width: 200px; height: 200px; object-fit: contain;">
                 </div>
             @endif
         </div>

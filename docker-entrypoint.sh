@@ -14,6 +14,9 @@ php artisan migrate --force
 # Création admin initiale (idempotent via updateOrCreate)
 php artisan db:seed --class=AdminUserSeeder --force 2>/dev/null || true
 
+# Catalogue de base avec images persistantes (idempotent)
+php artisan db:seed --class=ProductSeeder --force 2>/dev/null || true
+
 # Optimisations production
 php artisan config:cache
 php artisan route:cache

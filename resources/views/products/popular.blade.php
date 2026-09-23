@@ -24,11 +24,8 @@
                             Popular
                         </div>
 
-                        <!-- Product image -->
                         <img class="card-img-top"
-                             src="{{ $product->image 
-                                ? asset('storage/' . $product->image) 
-                                : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}"
+                             src="{{ $product->image_url }}"
                              alt="{{ $product->name }}" />
 
                         <!-- Product details -->
@@ -53,15 +50,12 @@
                                     Voir détails
                                 </a>
 
-                                <!-- 🛒 JS Add to Cart -->
                                 <button class="btn btn-success mt-auto"
                                     onclick="addToCart(
                                         {{ $product->id }},
-                                        '{{ $product->name }}',
+                                        '{{ addslashes($product->name) }}',
                                         {{ $product->price }},
-                                        '{{ $product->image 
-                                            ? asset('storage/' . $product->image) 
-                                            : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}'
+                                        '{{ $product->image_url }}'
                                     )">
                                     Add to Cart
                                 </button>

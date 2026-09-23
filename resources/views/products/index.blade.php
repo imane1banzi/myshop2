@@ -24,7 +24,7 @@
                             @endif
                             <!-- Product image : fond blanc e-commerce, taille uniforme -->
                             <div class="bg-white d-flex align-items-center justify-content-center p-3" style="height: 300px; overflow: hidden;">
-                                <img class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; background: #fff;" src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" alt="{{ $product->name }}" loading="lazy" />
+                                <img class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: contain; background: #fff;" src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" />
                             </div>
                             <!-- Product details-->
                             <div class="card-body p-4">
@@ -47,7 +47,7 @@
 
         <button
             class="btn btn-success rounded-pill fw-semibold"
-            onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
+            onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->image_url }}')">
             <i class="bi bi-cart-plus"></i> Ajouter au panier
         </button>
     </div>

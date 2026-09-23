@@ -6,7 +6,7 @@
     <div class="card mb-4 shadow">
         <div class="row g-0">
             <div class="col-md-5 bg-white d-flex align-items-center justify-content-center p-4" style="min-height: 400px;">
-                <img src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" style="max-height: 380px; width: 100%; object-fit: contain;" alt="{{ $product->name }}">
+                <img src="{{ $product->image_url }}" style="max-height: 380px; width: 100%; object-fit: contain;" alt="{{ $product->name }}">
             </div>
             <div class="col-md-8">
                 <div class="card-body">

@@ -71,7 +71,7 @@
                         <div class="card h-100">
                             <!-- Product image : fond blanc uniforme -->
                             <div class="bg-white d-flex align-items-center justify-content-center p-3" style="height: 280px; overflow: hidden;">
-                                <img style="max-height: 100%; max-width: 100%; object-fit: contain;" src="{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}" alt="{{ $product->name }}" loading="lazy" />
+                                <img style="max-height: 100%; max-width: 100%; object-fit: contain;" src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" />
                             </div>
                             <!-- Product details -->
                             <div class="card-body p-4">
@@ -89,7 +89,7 @@
                                     <a class="btn btn-outline-dark mt-auto" style="margin-bottom: 10px" href="{{ route('products.show', $product->id) }}">View options</a>
                                     
                                     <!-- Add to Cart button with an encouraging color -->
-                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->image ? asset('storage/' . $product->image) : 'https://dummyimage.com/450x300/dee2e6/6c757d.jpg' }}')">
+                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->image_url }}')">
                                         Add to Cart
                                     </button>
                                 </div>
