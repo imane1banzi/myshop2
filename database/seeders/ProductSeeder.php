@@ -31,5 +31,14 @@ class ProductSeeder extends Seeder
                 'image' => 'images/produits/collier-or-zircon.png',
             ]
         );
+
+        Product::updateOrCreate(
+            ['name' => 'Collier Minimaliste Doré 18K'],
+            [
+                'description' => "Collier délicat au design minimaliste, parfait pour compléter une tenue quotidienne ou élégante. Sa chaîne fine et sa finition dorée offrent un style discret et moderne.",
+                'price' => 299.00,
+                'image' => 'images/produits/collier-minimaliste-dore-18k.jpg',
+            ]
+        );
     }
 }
