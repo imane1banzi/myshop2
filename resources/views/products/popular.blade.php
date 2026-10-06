@@ -21,7 +21,7 @@
                         <!-- 🔥 Badge POPULAR -->
                         <div class="badge bg-dark text-white position-absolute"
                              style="top: 0.5rem; right: 0.5rem">
-                            Popular
+                            Populaire
                         </div>
 
                         <img class="card-img-top"
@@ -47,7 +47,7 @@
 
                                 <a class="btn btn-outline-dark mt-auto"
                                    href="{{ route('products.show', $product->id) }}">
-                                    Voir détails
+                                    Voir les détails
                                 </a>
 
                                 <button class="btn btn-success mt-auto"
@@ -57,7 +57,7 @@
                                         {{ $product->price }},
                                         '{{ $product->image_url }}'
                                     )">
-                                    Add to Cart
+                                    Ajouter au panier
                                 </button>
 
                             </div>

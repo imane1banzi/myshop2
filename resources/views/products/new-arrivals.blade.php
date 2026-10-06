@@ -31,7 +31,7 @@
                     @if($product->created_at->gte(now()->subDays(7)))
                         <div class="badge bg-danger text-white position-absolute"
                              style="top: 0.5rem; right: 0.5rem">
-                            NEW
+                            Nouveau
                         </div>
                     @endif
 
@@ -53,7 +53,7 @@
 
                             <a class="btn btn-outline-dark mt-auto"
                                href="{{ route('products.show', $product->id) }}">
-                                Voir détails
+                                Voir les détails
                             </a>
 
                             <!-- 🛒 JS Add to Cart -->
@@ -64,7 +64,7 @@
                                     {{ $product->price }},
                                     '{{ $product->image_url }}'
                                 )">
-                                Add to Cart
+                                Ajouter au panier
                             </button>
 
                         </div>

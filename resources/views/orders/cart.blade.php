@@ -3,8 +3,8 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="shoppingCartModalLabel">Shopping Cart</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="shoppingCartModalLabel">Panier</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <div class="modal-body">
 
@@ -18,14 +18,14 @@
                 </div>
 
                 <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
-                    Total Price: MAD {{ number_format($products->sum('price'), 2) }}
+                    Prix total : MAD {{ number_format($products->sum('price'), 2) }}
                 </div>
 
                 <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-success me-2" onclick="applyDiscount()">Apply Discount</button>
+                    <button class="btn btn-success me-2" onclick="applyDiscount()">Appliquer la remise</button>
                     <form method="POST" action="{{ route('checkout') }}">
                         @csrf
-                        <button type="submit" class="btn btn-primary">Proceed to Checkout</button>
+                        <button type="submit" class="btn btn-primary">Passer commande</button>
                     </form>
                 </div>
 

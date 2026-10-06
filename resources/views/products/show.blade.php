@@ -12,14 +12,14 @@
                 <div class="card-body">
                     <h5 class="card-title">Description</h5>
                     <p class="card-text">{{ $product->description }}</p>
-                    <h5 class="card-title">Price</h5>
-                    <p class="card-text">${{ number_format($product->price, 2) }}</p>
+                    <h5 class="card-title">Prix</h5>
+                    <p class="card-text">{{ number_format($product->price, 2) }} MAD</p>
                 </div>
             </div>
         </div>
     </div>
     <div class="text-center">
-        <a href="{{ route('products.index') }}" class="btn btn-primary">Back to Products</a>
+        <a href="{{ route('products.index') }}" class="btn btn-primary">Retour aux produits</a>
     </div>
 </div>
 @endsection

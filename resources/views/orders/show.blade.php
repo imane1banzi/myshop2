@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Order #{{ $order->id }} Details</h2>
+    <h2>Détails de la commande #{{ $order->id }}</h2>
 
     {{-- Messages --}}
     @if(session('success'))
@@ -25,28 +25,28 @@
 
         {{-- Infos client --}}
         <div class="mb-3">
-            <label class="form-label">Full Name</label>
+            <label class="form-label">Nom complet</label>
             <input type="text" name="fullname" class="form-control" value="{{ old('fullname', $order->fullname) }}" required>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Email</label>
+            <label class="form-label">E-mail</label>
             <input type="email" name="email" class="form-control" value="{{ old('email', $order->email) }}" required>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Phone</label>
+            <label class="form-label">Téléphone</label>
             <input type="text" name="phone" class="form-control" value="{{ old('phone', $order->phone) }}" required>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Address</label>
+            <label class="form-label">Adresse</label>
             <textarea name="address" class="form-control" required>{{ old('address', $order->address) }}</textarea>
         </div>
 
         {{-- Champ Code Promo --}}
         <div class="mb-3">
-            <label class="form-label">Promo Code</label>
+            <label class="form-label">Code promo</label>
             <select name="coupon_code" id="promo_code" class="form-select">
                 <option value="">-- Aucun --</option>
                 @foreach($promoCodes as $promo)
@@ -63,7 +63,7 @@
 
         {{-- Champ Prix total --}}
         <div class="mb-3">
-            <label class="form-label">Total Price (MAD)</label>
+            <label class="form-label">Prix total (MAD)</label>
             <input type="number" step="0.01"
        id="total_price_input"
        name="total_price"
@@ -74,7 +74,7 @@
 
         {{-- Affichage total et remise --}}
         <div class="mt-3 text-end">
-            <div><strong>Total: MAD <span id="totalPriceDisplay">{{ number_format($order->total_price, 2) }}</span></strong></div>
+            <div><strong>Total : MAD <span id="totalPriceDisplay">{{ number_format($order->total_price, 2) }}</span></strong></div>
             <div class="text-success" id="discountDisplay" style="{{ $order->discount_amount > 0 ? '' : 'display:none;' }}">
                 Réduction appliquée: -<span id="discountAmount">{{ number_format($order->discount_amount, 2) }}</span> MAD
             </div>
@@ -82,7 +82,7 @@
 
         {{-- Status --}}
         <div class="mb-3">
-            <label class="form-label">Status</label>
+            <label class="form-label">Statut</label>
             <select name="status" class="form-select">
                 <option value="en attente" {{ $order->status === 'en attente' ? 'selected' : '' }}>En attente</option>
                 <option value="en cours" {{ $order->status === 'en cours' ? 'selected' : '' }}>En cours</option>
@@ -93,26 +93,26 @@
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Delivery Comment</label>
+            <label class="form-label">Commentaire livraison</label>
             <textarea name="delivery_comment" class="form-control" rows="3">{{ old('delivery_comment', $order->delivery_comment) }}</textarea>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Ordered At</label>
+            <label class="form-label">Commandée le</label>
             <input type="text" class="form-control" value="{{ $order->created_at->format('Y-m-d H:i') }}" readonly>
         </div>
 
         <hr>
 
         {{-- Items --}}
-        <h4>Items:</h4>
+        <h4>Articles :</h4>
         <table class="table table-bordered" id="itemsTable">
             <thead>
                 <tr>
-                    <th>Product</th>
-                    <th>Price (MAD)</th>
-                    <th>Quantity</th>
-                    <th>Subtotal (MAD)</th>
+                    <th>Produit</th>
+                    <th>Prix (MAD)</th>
+                    <th>Quantité</th>
+                    <th>Sous-total (MAD)</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -135,18 +135,18 @@
                     </td>
                     <td class="subtotal">{{ number_format($item->product_price * $item->quantity, 2) }}</td>
                     <td>
-                        <button type="button" class="btn btn-danger btn-sm remove-item">Remove</button>
+                        <button type="button" class="btn btn-danger btn-sm remove-item">Retirer</button>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
 
-        <button type="button" class="btn btn-success mb-3" id="addItemBtn">Add Product</button>
+        <button type="button" class="btn btn-success mb-3" id="addItemBtn">Ajouter un produit</button>
 
         <div class="mt-4">
-            <button type="submit" class="btn btn-primary">Update Order</button>
-            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Back</a>
+            <button type="submit" class="btn btn-primary">Mettre à jour la commande</button>
+            <a href="{{ route('orders.index') }}" class="btn btn-secondary">Retour</a>
         </div>
     </form>
 </div>
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <td class="price">0.00</td>
             <td><input type="number" name="items[${index}][quantity]" class="form-control quantity-input" value="1" min="1" required></td>
             <td class="subtotal">0.00</td>
-            <td><button type="button" class="btn btn-danger btn-sm remove-item">Remove</button></td>
+            <td><button type="button" class="btn btn-danger btn-sm remove-item">Retirer</button></td>
         `;
         itemsTable.appendChild(tr);
         initRowListeners(tr);

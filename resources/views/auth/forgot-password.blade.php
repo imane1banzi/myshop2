@@ -1,8 +1,8 @@
 
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="fr">
     <head>
-        <title>Password Reset</title>
+        <title>Mot de passe oublié</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
@@ -40,10 +40,10 @@
     <body>
         <div class="container">
             <div class="form-container">
-                <h1 class="text-center text-success">Forgot Password</h1>
+                <h1 class="text-center text-success">Mot de passe oublié</h1>
                 
                 <div class="mb-4 text-sm text-gray-600 text-center">
-                    {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+                    {{ __('Mot de passe oublié ? Pas de problème. Indiquez-nous votre adresse e-mail et nous vous enverrons un lien pour en choisir un nouveau.') }}
                 </div>
 
                 <!-- Session Status -->
@@ -54,14 +54,14 @@
 
                     <!-- Email Address -->
                     <div class="form-group">
-                        <x-input-label for="email" :value="__('Email')" />
+                        <x-input-label for="email" :value="__('E-mail')" />
                         <x-text-input id="email" class="form-control" type="email" name="email" :value="old('email')" required autofocus />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <div class="flex items-center justify-end mt-4">
                         <x-primary-button class="btn btn-primary">
-                            {{ __('Email Password Reset Link') }}
+                            {{ __('Envoyer le lien de réinitialisation') }}
                         </x-primary-button>
                     </div>
                 </form>

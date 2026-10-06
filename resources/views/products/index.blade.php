@@ -20,7 +20,7 @@
                         <div class="card h-100">
                             <!-- Sale badge-->
                             @if($product->price < 50)
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Promo</div>
                             @endif
                             <!-- Product image : fond blanc e-commerce, taille uniforme -->
                             <div class="bg-white d-flex align-items-center justify-content-center p-3" style="height: 300px; overflow: hidden;">
