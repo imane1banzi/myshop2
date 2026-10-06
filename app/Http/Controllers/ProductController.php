@@ -47,10 +47,17 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:4096',
         ]);
 
-        // Handle image upload
+        // Handle image upload (dossier public direct : pas de storage:link requis sur Hostinger)
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('product_images', 'public');
+            $file = $request->file('image');
+            $filename = time() . '_' . \Illuminate\Support\Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $destDir = public_path('images/produits');
+            if (!is_dir($destDir)) {
+                mkdir($destDir, 0755, true);
+            }
+            $file->move($destDir, $filename);
+            $imagePath = 'images/produits/' . $filename;
         }
 
         // Create a new product
@@ -104,15 +111,26 @@ class ProductController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:4096',
         ]);
 
-        // Handle image upload and replacement
+        // Handle image upload and replacement (public/images/produits : compatible Hostinger sans symlink)
         if ($request->hasFile('image')) {
-            // Delete the old image if it exists
+            // Delete the old image if it exists (nouveau chemin public/ + ancien chemin storage/)
             if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+                if (str_starts_with($product->image, 'images/') && file_exists(public_path($product->image))) {
+                    @unlink(public_path($product->image));
+                } else {
+                    Storage::disk('public')->delete($product->image);
+                }
             }
 
-            // Upload new image
-            $imagePath = $request->file('image')->store('product_images', 'public');
+            // Upload new image to public/images/produits
+            $file = $request->file('image');
+            $filename = time() . '_' . \Illuminate\Support\Str::random(10) . '.' . $file->getClientOriginalExtension();
+            $destDir = public_path('images/produits');
+            if (!is_dir($destDir)) {
+                mkdir($destDir, 0755, true);
+            }
+            $file->move($destDir, $filename);
+            $imagePath = 'images/produits/' . $filename;
         } else {
             // Keep the current image
             $imagePath = $product->image;
@@ -138,9 +156,13 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        // Delete the product image from storage
+        // Delete the product image from storage (nouveau chemin public/ + ancien chemin storage/ pour compat)
         if ($product->image) {
-            Storage::disk('public')->delete($product->image);
+            if (str_starts_with($product->image, 'images/') && file_exists(public_path($product->image))) {
+                @unlink(public_path($product->image));
+            } else {
+                Storage::disk('public')->delete($product->image);
+            }
         }
 
         // Delete the product
