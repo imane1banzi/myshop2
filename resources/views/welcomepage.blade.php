@@ -1,102 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Header-->
-    <header class="py-5">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center text-white">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-indicators">
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Diapositive 1"></button>
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Diapositive 2"></button>
-                        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Diapositive 3"></button>
-                    </div>
-                    <div class="carousel-inner rounded shadow">
-                        <div class="carousel-item active">
-                            <a href="{{ route('products.index') }}" class="d-block position-relative text-decoration-none">
-                                <img src="{{ asset('images/couv4.png') }}" class="d-block w-100" alt="Myshop - Des bijoux qui subliment votre style">
-                                {{-- Zone cliquable sur le bouton DÉCOUVRIR incrusté en bas à droite --}}
-                                <span style="position:absolute; right:3%; bottom:6%; width:24%; height:14%; cursor:pointer;" aria-hidden="true"></span>
-                            </a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="{{ route('products.index') }}" class="d-block position-relative text-decoration-none">
-                                <img src="{{ asset('images/couv6.jpg') }}" class="d-block w-100" alt="Myshop - Elegance et raffinement">
-                                {{-- Zone cliquable sur le bouton DÉCOUVRIR incrusté --}}
-                                <span style="position:absolute; right:3%; bottom:6%; width:24%; height:14%; cursor:pointer;" aria-hidden="true"></span>
-                            </a>
-                        </div>
-                        <div class="carousel-item">
-                            <a href="{{ route('products.index') }}" class="d-block text-decoration-none">
-                                <img src="{{ asset('images/couv5.png') }}" class="d-block w-100" alt="Myshop - Collection exclusive">
-                            </a>
-                        </div>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Précédent</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Suivant</span>
-                    </button>
+    @php $hero = $products->take(3); @endphp
+
+    <section class="ds-container ds-hero">
+        <div class="ds-hero__grid">
+            <div class="ds-hero__copy">
+                <p class="ds-eyebrow ds-eyebrow--wide">Nouvelle collection</p>
+                <h1 class="ds-hero__title">Des bijoux qui subliment votre style</h1>
+                <p class="ds-lead">Bagues torsadées, colliers dorés, éclat garanti. Des pièces délicates en plaqué or, serties de zircons.</p>
+                <div class="ds-actions" style="margin-top:8px">
+                    <a href="{{ route('products.index') }}" class="ds-btn ds-btn--primary">Découvrir</a>
+                    <a href="{{ route('about') }}" class="ds-btn ds-btn--secondary">Notre histoire</a>
                 </div>
             </div>
-        </div>
-    </header>
 
-    <!-- About Section : aperçu, page complète sur /about -->
-    <section id="about-preview" class="py-5 bg-light">
-        <div class="container px-4 px-lg-5 my-5">
-            <div class="text-center">
-                <p class="text-uppercase text-muted mb-1" style="letter-spacing: 3px;">Myshop</p>
-                <h2 class="fw-bolder">Des bijoux qui racontent votre histoire</h2>
-                <p class="lead text-muted">Bagues torsadées, colliers dorés, éclat garanti.</p>
-                <p>
-                    Bienvenue chez <strong>Myshop</strong> : des bijoux délicats en plaqué or,
-                    sertis de zircons, photographiés en fond blanc HD pour voir chaque détail.
-                    Livraison rapide au Maroc, paiement à la livraison, échange sous 7 jours.
-                </p>
-                <a href="{{ route('about') }}" class="btn btn-dark rounded-pill px-4 mt-2">Découvrir notre histoire</a>
-            </div>
+            @if ($hero->isNotEmpty())
+                <div class="ds-mosaic">
+                    @foreach ($hero as $product)
+                        <a href="{{ route('products.show', $product) }}" aria-label="{{ $product->name }}">
+                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+                        </a>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </section>
 
-    <!-- Product Section -->
-    <section class="py-5" style="margin-top: 10px;">
-        <div class="container px-4 px-lg-5 mt-5">
-            <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-                @foreach ($products as $product)
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image : fond blanc uniforme -->
-                            <div class="bg-white d-flex align-items-center justify-content-center p-3" style="height: 280px; overflow: hidden;">
-                                <img style="max-height: 100%; max-width: 100%; object-fit: contain;" src="{{ $product->image_url }}" alt="{{ $product->name }}" loading="lazy" />
-                            </div>
-                            <!-- Product details -->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name -->
-                                    <h5 class="fw-bolder">{{ $product->name }}</h5>
-                                    <!-- Product price -->
-                                    {{ number_format($product->price, 2) }} MAD
-                                </div>
-                            </div>
-                            <!-- Product actions -->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-                                <div class="text-center">
-                                    <!-- View Options button -->
-                                    <a class="btn btn-outline-dark mt-auto" style="margin-bottom: 10px" href="{{ route('products.show', $product->id) }}">Voir les détails</a>
-                                    
-                                    <!-- Add to Cart button with an encouraging color -->
-                                    <button class="btn btn-success mt-auto" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ $product->image_url }}')">
-                                        Ajouter au panier
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+    <section class="ds-container" style="padding-top:var(--ds-section)">
+        <div class="ds-section-head">
+            <h2 class="ds-h2">Nos pièces</h2>
+            <a href="{{ route('products.index') }}" class="ds-link">Voir toute la boutique</a>
+        </div>
+        <div class="ds-grid ds-grid--230">
+            @foreach ($products as $product)
+                @include('products.partials.card', ['product' => $product, 'variant' => 'home'])
+            @endforeach
+        </div>
+    </section>
+
+    <section class="ds-container" style="padding-top:var(--ds-section);padding-bottom:var(--ds-section)">
+        <div class="ds-story">
+            <div class="ds-stack">
+                <p class="ds-eyebrow ds-eyebrow--wide">Myshop</p>
+                <h2 class="ds-h2">Des bijoux qui racontent votre histoire</h2>
+            </div>
+            <div class="ds-stack ds-stack--20">
+                <p class="ds-body">Bienvenue chez Myshop : des bijoux délicats en plaqué or, sertis de zircons, photographiés en fond blanc HD pour voir chaque détail. Livraison rapide au Maroc, paiement à la livraison, échange sous 7 jours.</p>
+                <a href="{{ route('about') }}" class="ds-link">Découvrir notre histoire</a>
             </div>
         </div>
     </section>

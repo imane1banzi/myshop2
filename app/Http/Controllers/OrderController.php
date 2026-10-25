@@ -54,7 +54,9 @@ class OrderController extends Controller
             ]);
         }
     
-        return redirect()->route('checkout.success')->with('success', 'Commande validée avec succès !');
+        return redirect()->route('checkout.success')
+            ->with('success', 'Commande validée avec succès !')
+            ->with('order_id', $order->id);
     }
 
     /**

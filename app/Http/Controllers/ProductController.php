@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\OrderItem;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -91,14 +89,58 @@ class ProductController extends Controller
         }
     }
     /**
-     * Display a listing of the products.
-     *
-     * @return \Illuminate\Http\Response
+     * Boutique : filtre catégorie (?cat=) et tri (?sort=pop|new|asc|desc).
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::all();
-        return view('products.index', compact('products'));
+        return $this->shop($request, $request->query('sort', 'pop'));
+    }
+
+    /** Liste produits commune à /products, /products/popular-items et /products/new-arrivals. */
+    private function shop(Request $request, string $sort)
+    {
+        $sorts = [
+            'pop' => 'Articles populaires',
+            'new' => 'Nouveautés',
+            'asc' => 'Prix croissant',
+            'desc' => 'Prix décroissant',
+        ];
+        if (!array_key_exists($sort, $sorts)) {
+            $sort = 'pop';
+        }
+
+        $category = $request->query('cat');
+        if (!in_array($category, Product::CATEGORIES, true)) {
+            $category = null;
+        }
+
+        $query = Product::query();
+        if ($category) {
+            $query->where('category', $category);
+        }
+
+        match ($sort) {
+            // Populaires = quantités vendues (order_items), puis les plus récents
+            'pop' => $query->withSum('orderItems as total_sold', 'quantity')
+                ->orderByDesc('total_sold')
+                ->latest(),
+            'new' => $query->latest(),
+            'asc' => $query->orderBy('price'),
+            'desc' => $query->orderByDesc('price'),
+        };
+
+        $products = $query->get();
+        $showCategories = Product::whereNotNull('category')->exists();
+
+        if ($category) {
+            $title = $category;
+        } elseif ($sort === 'new') {
+            $title = 'Nouveautés';
+        } else {
+            $title = 'Tous les produits';
+        }
+
+        return view('products.index', compact('products', 'sorts', 'sort', 'category', 'showCategories', 'title'));
     }
 
     /**
@@ -124,6 +166,7 @@ class ProductController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
+            'category' => 'nullable|in:' . implode(',', Product::CATEGORIES),
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:4096',
         ]);
 
@@ -138,6 +181,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
+            'category' => $request->category ?: null,
             'image' => $imagePath,
         ]);
 
@@ -153,7 +197,13 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('products.show', compact('product'));
+        $related = Product::where('id', '!=', $product->id)
+            ->orderByRaw('category = ? desc', [$product->category])
+            ->latest()
+            ->take(4)
+            ->get();
+
+        return view('products.show', compact('product', 'related'));
     }
 
     /**
@@ -181,6 +231,7 @@ class ProductController extends Controller
             'name' => 'required',
             'description' => 'required',
             'price' => 'required|numeric',
+            'category' => 'nullable|in:' . implode(',', Product::CATEGORIES),
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:4096',
         ]);
 
@@ -201,6 +252,7 @@ class ProductController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'price' => $request->price,
+            'category' => $request->category ?: null,
             'image' => $imagePath,
         ]);
 
@@ -225,32 +277,13 @@ class ProductController extends Controller
         // Redirect to the product list
         return redirect()->route('products.index');
     }
-   public function popularItems()
-{
-    // Récupérer les produits les plus vendus via la table order_items
-    $popularProducts = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
-        ->groupBy('product_id')
-        ->orderByDesc('total_sold')
-        ->with('product') // Si relation définie
-        ->take(10)
-        ->get();
-
-    return view('products.popular', compact('popularProducts'));
-}
-public function newArrivals(Request $request)
-{
-    // Nombre de produits par page (5 par défaut)
-    $perPage = $request->get('per_page', 5);
-
-    // Sécurité : valeurs autorisées
-    if (!in_array($perPage, [5, 10, 15])) {
-        $perPage = 5;
+    public function popularItems(Request $request)
+    {
+        return $this->shop($request, 'pop');
     }
 
-    $newArrivals = Product::orderBy('created_at', 'desc')
-        ->paginate($perPage)
-        ->withQueryString(); // garde les paramètres dans la pagination
-
-    return view('products.new-arrivals', compact('newArrivals', 'perPage'));
-}
+    public function newArrivals(Request $request)
+    {
+        return $this->shop($request, 'new');
+    }
 }

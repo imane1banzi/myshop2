@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WelcomeController;
@@ -27,6 +28,7 @@ Route::get('/products/popular-items', [ProductController::class, 'popularItems']
 Route::get('/products/new-arrivals', [ProductController::class, 'newArrivals'])->name('products.new-arrivals');
 
 // Panier + checkout accessibles au guest comme au client (JS localStorage)
+Route::get('/cart', [CartController::class, 'showCart'])->name('cart');
 Route::get('/checkout', [OrderController::class, 'showCheckout'])->name('checkout');
 Route::post('/checkout', [OrderController::class, 'placeOrder'])->name('checkout.place');
 Route::get('/checkout-success', [OrderController::class, 'success'])->name('checkout.success');

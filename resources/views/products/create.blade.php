@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('bootstrap', '1')
+
 @section('content')
 <div class="container">
     <h1 class="text-center mb-5" style="color: gray;">Ajouter un produit</h1>
@@ -17,6 +19,15 @@
         <div class="mb-3">
             <label for="price" class="form-label">Prix</label>
             <input type="number" class="form-control" id="price" name="price" required>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Catégorie</label>
+            <select class="form-select" id="category" name="category">
+                <option value="">— Aucune —</option>
+                @foreach (\App\Models\Product::CATEGORIES as $category)
+                    <option value="{{ $category }}" {{ old('category') === $category ? 'selected' : '' }}>{{ $category }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="mb-3">
             <label for="image" class="form-label">Image du produit — fond blanc, 800x800px, JPG/PNG &lt; 2Mo</label>

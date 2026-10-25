@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('bootstrap', '1')
+
 @section('content')
 <div class="container">
     <h2>Liste des Codes Promo</h2>

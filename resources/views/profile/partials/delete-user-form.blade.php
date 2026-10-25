@@ -1,55 +1,19 @@
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Supprimer le compte') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Une fois votre compte supprimé, toutes ses ressources et données seront définitivement supprimées. Avant de supprimer votre compte, veuillez télécharger les données que vous souhaitez conserver.') }}
-        </p>
+<section class="ds-panel">
+    <header class="ds-stack" style="gap:6px">
+        <h2 class="ds-h3">Supprimer le compte</h2>
+        <p class="ds-small ds-muted">Une fois votre compte supprimé, toutes ses données seront définitivement effacées. Saisissez votre mot de passe pour confirmer.</p>
     </header>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Supprimer le compte') }}</x-danger-button>
+    <form method="post" action="{{ route('profile.destroy') }}" class="ds-stack"
+          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')">
+        @csrf
+        @method('delete')
 
-    <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
-        <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
-            @csrf
-            @method('delete')
+        <label class="ds-field">Mot de passe
+            <input type="password" name="password" class="ds-input" autocomplete="current-password">
+            @error('password', 'userDeletion')<span class="ds-error">{{ $message }}</span>@enderror
+        </label>
 
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Êtes-vous sûr de vouloir supprimer votre compte ?') }}
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('Une fois votre compte supprimé, toutes ses ressources et données seront définitivement supprimées. Veuillez saisir votre mot de passe pour confirmer la suppression.') }}
-            </p>
-
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Mot de passe') }}" class="sr-only" />
-
-                <x-text-input
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Mot de passe') }}"
-                />
-
-                <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Annuler') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Supprimer le compte') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
+        <button type="submit" class="ds-btn ds-btn--danger" style="height:50px;padding:0 28px">Supprimer le compte</button>
+    </form>
 </section>

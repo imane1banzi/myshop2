@@ -8,8 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Product extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description', 'price', 'image'];
-    
+    protected $fillable = ['name', 'description', 'price', 'category', 'image'];
+
+    /** Catégories proposées dans la boutique (filtres) et le formulaire admin. */
+    public const CATEGORIES = ['Colliers', 'Bagues', "Boucles d'oreilles"];
+
+    /** Badge « Nouveau » : produit ajouté il y a moins de 30 jours. */
+    public const NEW_DAYS = 30;
+
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class);
+    }
+
     public function orders()
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity', 'price');
@@ -32,5 +43,16 @@ class Product extends Model
             return asset($this->image);
         }
         return asset('storage/' . $this->image);
+    }
+
+    /** Prix formaté : « 249,00 MAD ». */
+    public function getPriceLabelAttribute(): string
+    {
+        return number_format((float) $this->price, 2, ',', ' ') . ' MAD';
+    }
+
+    public function getIsNewAttribute(): bool
+    {
+        return $this->created_at && $this->created_at->gte(now()->subDays(self::NEW_DAYS));
     }
 }

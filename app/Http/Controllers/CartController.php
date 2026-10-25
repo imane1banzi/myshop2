@@ -1,13 +1,11 @@
 <?php
 namespace App\Http\Controllers;
-use App\Models\Product;
 
 class CartController extends Controller
 {
+    /** Page panier : rendue côté client depuis le localStorage (public/js/cart.js). */
     public function showCart()
     {
-        $products = Product::all();
-        return view('orders.cart', compact('products'));
+        return view('orders.cart');
     }
- 
 }

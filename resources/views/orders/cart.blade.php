@@ -1,37 +1,34 @@
-<!-- Cart Modal -->
-<div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="shoppingCartModalLabel">Panier</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-            </div>
-            <div class="modal-body">
+@extends('layouts.app')
 
-                <div id="cartItemsContainer" class="row g-3">
-                    @foreach($products as $product)
-                        <div class="col-12 d-flex justify-content-between border-bottom pb-2">
-                            <div>{{ $product->name }}</div>
-                            <div>MAD {{ number_format($product->price, 2) }}</div>
-                        </div>
-                    @endforeach
-                </div>
+@section('title', 'Panier · Myshop')
 
-                <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
-                    Prix total : MAD {{ number_format($products->sum('price'), 2) }}
-                </div>
+@section('content')
+{{-- Rendu côté client depuis le localStorage : voir renderCartPage() dans public/js/cart.js --}}
+<section class="ds-container ds-section" id="cartPage">
+    <h1 class="ds-h1" style="margin-bottom:32px">Panier</h1>
 
-                <div class="d-flex justify-content-end mt-3">
-                    <button class="btn btn-success me-2" onclick="applyDiscount()">Appliquer la remise</button>
-                    <form method="POST" action="{{ route('checkout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-primary">Passer commande</button>
-                    </form>
-                </div>
-
-            </div>
-        </div>
+    <div class="ds-empty" id="cartEmpty">
+        <p>Votre panier est vide.</p>
+        <a href="{{ route('products.index') }}" class="ds-btn ds-btn--primary">Découvrir la boutique</a>
     </div>
-</div>
 
-    
+    <div class="ds-two-col" id="cartFull" hidden>
+        <div class="ds-lines" id="cartItemsContainer"></div>
+
+        <aside class="ds-summary">
+            <h2 class="ds-h3">Récapitulatif</h2>
+            <div class="ds-stack" style="gap:8px">
+                <label for="promoCodeInput" class="ds-summary__label">Code promo</label>
+                <div class="ds-promo">
+                    <input type="text" id="promoCodeInput" placeholder="Saisissez votre code" autocomplete="off">
+                    <button type="button" id="promoButton" onclick="togglePromoCode()">Appliquer</button>
+                </div>
+                <span id="promoFeedback" class="ds-promo-msg" role="status" hidden></span>
+            </div>
+            <div class="ds-totals" id="cartTotals"></div>
+            <button type="button" class="ds-btn ds-btn--primary ds-btn--tall" onclick="proceedToCheckout()">Passer commande</button>
+            <p class="ds-muted" style="font-size:12px;text-align:center">Paiement à la livraison</p>
+        </aside>
+    </div>
+</section>
+@endsection

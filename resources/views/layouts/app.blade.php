@@ -1,207 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-  <script src="{{ asset('js/cart.js') }}" defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Myshop</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="description" content="Myshop — bijoux délicats en plaqué or. Livraison partout au Maroc, paiement à la livraison.">
+    <title>@yield('title', 'Myshop — Bijoux · Maroc')</title>
     <link rel="icon" type="image/png" href="{{ asset('images/mon-logo.png') }}">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Custom styles -->
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+
+    {{-- Bootstrap : uniquement pour les vues admin pas encore migrées (@section('bootstrap', '1')) --}}
+    @hasSection('bootstrap')
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    @endif
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="{{ asset('css/myshop.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/cart.js') }}" defer></script>
 </head>
-<body>
-    @unless(request()->routeIs('login'))
- <!-- Navigation-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshop</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Basculer la navigation"><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('welcomepage') }}">Accueil</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ route('about') }}">À propos</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Boutique</a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="{{ route('products.index') }}">Tous les produits</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="{{ route('products.popular') }}">Articles populaires</a></li>
-                        <li><a class="dropdown-item" href="{{ route('products.new-arrivals') }}">Nouveautés</a></li>
-                    </ul>
-                </li>
-                {{-- ADMIN : accès à tout --}}
-                @auth
-                    @if(auth()->user()->isAdmin())
-                        <li class="nav-item"><a class="nav-link fw-bold text-danger" href="{{ route('orders.index') }}">Commandes</a></li>
-                        <li class="nav-item"><a class="nav-link fw-bold text-danger" href="{{ route('promo_codes.index') }}">Codes promo</a></li>
-                    @else
-                        {{-- CLIENT AUTHENTIFIÉ : historique personnel --}}
-                        <li class="nav-item"><a class="nav-link" href="{{ route('my-orders.index') }}">Mes commandes</a></li>
-                    @endif
-                @endauth
-            
-            <!-- Cart Button -->
-            <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-                <i class="bi-cart-fill me-1"></i>
-                Panier
-                <span id="cartCountBadge" class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
-            </button>
-            
-            <!-- Cart Modal -->
-            <div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header bg-dark text-white">
-                            <h5 class="modal-title" id="shoppingCartModalLabel">Panier</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="cartItemsContainer" class="row g-3">
-                                <!-- Les détails du panier seront ajoutés ici dynamiquement avec JavaScript -->
-                            </div>
-                            <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
-                                Prix total : MAD 0
-                            </div>
-                            <div class="d-flex justify-content-end mt-3">
-                                <!-- Promo Code Section -->
-                                <div class="mb-3">
-                                    <label for="promoCodeInput" class="form-label">Code promo</label>
-                                    <div class="input-group">
-                                        <input type="text" id="promoCodeInput" class="form-control" placeholder="Saisissez votre code promo">
-                                        <button class="btn btn-success" onclick="applyPromoCode()">Appliquer</button>
-                                        <button class="btn btn-outline-danger" onclick="removePromoCode()" id="removePromoBtn" style="display: none;">Retirer le code promo</button>
-                                        <button class="btn btn-primary" onclick="proceedToCheckout()">Passer commande</button>
-                                    </div>
-                                    <small id="promoFeedback" class="form-text"></small>
-                                </div>
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
+<body class="ds">
+@php
+    $navItems = [
+        ['label' => 'Accueil', 'url' => route('welcomepage'), 'active' => request()->routeIs('welcomepage')],
+        ['label' => 'Boutique', 'url' => route('products.index'), 'active' => request()->routeIs('products.*')],
+        ['label' => 'À propos', 'url' => route('about'), 'active' => request()->routeIs('about')],
+    ];
+    $isAdmin = auth()->check() && auth()->user()->isAdmin();
+@endphp
+<div class="ds-page">
+    <div class="ds-banner">Livraison partout au Maroc · Paiement à la livraison · Échange sous 7 jours</div>
 
-            <!-- Authentication Buttons -->
-            @if (Auth::check())
-                {{-- Client : son nom / Admin : son nom + Admin --}}
-                @if(auth()->user()->isAdmin())
-                    <span class="badge bg-danger ms-3">{{ auth()->user()->name }} — Admin</span>
-                @else
-                    <span class="badge bg-success ms-3">{{ auth()->user()->name }}</span>
+    <header class="ds-header">
+        <div class="ds-container ds-header__bar">
+            <a href="{{ route('welcomepage') }}" class="ds-logo" aria-label="Myshop — accueil">
+                <span class="ds-logo__mark"></span>
+                <span class="ds-logo__text">
+                    <span class="ds-logo__name">Myshop</span>
+                    <span class="ds-logo__tag">Bijoux · Maroc</span>
+                </span>
+            </a>
+
+            <nav class="ds-nav" aria-label="Navigation principale">
+                @foreach ($navItems as $item)
+                    <a href="{{ $item['url'] }}" class="ds-nav__link {{ $item['active'] ? 'is-active' : '' }}">{{ $item['label'] }}</a>
+                @endforeach
+                {{-- ADMIN : accès à la gestion --}}
+                @if ($isAdmin)
+                    <a href="{{ route('orders.index') }}" class="ds-nav__link ds-nav__link--admin {{ request()->routeIs('orders.*') ? 'is-active' : '' }}">Commandes</a>
+                    <a href="{{ route('promo_codes.index') }}" class="ds-nav__link ds-nav__link--admin {{ request()->routeIs('promo_codes.*') ? 'is-active' : '' }}">Codes promo</a>
                 @endif
-                <!-- Logout Button -->
-                <form method="POST" action="{{ route('logout') }}" class="ms-3">
-                    @csrf
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi-box-arrow-right me-1"></i>
-                        Déconnexion
-                    </button>
-                </form>
-            @else
-                {{-- Invité : rien, juste Login --}}
-                <!-- Login Button -->
-                <button class="btn btn-outline-dark ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    <i class="bi-box-arrow-in-right me-1"></i>
-                    Connexion
+            </nav>
+
+            <div class="ds-header__actions">
+                <a href="{{ auth()->check() ? route('my-orders.index') : route('login') }}" class="ds-iconbtn" aria-label="Mon compte">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+                    <span class="ds-iconbtn__label">{{ auth()->check() ? \Illuminate\Support\Str::before(auth()->user()->name, ' ') : 'Connexion' }}</span>
+                </a>
+                <a href="{{ route('cart') }}" class="ds-iconbtn" aria-label="Panier">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+                    <span class="ds-iconbtn__label">Panier</span>
+                    <span class="ds-badge" id="cartCountBadge">0</span>
+                </a>
+                <button type="button" class="ds-iconbtn ds-burger" id="dsMenuToggle" aria-label="Menu" aria-expanded="false" aria-controls="dsMobileNav">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"></path></svg>
                 </button>
+            </div>
+        </div>
+        <nav class="ds-mobile-nav" id="dsMobileNav" aria-label="Navigation mobile">
+            @foreach ($navItems as $item)
+                <a href="{{ $item['url'] }}">{{ $item['label'] }}</a>
+            @endforeach
+            @if ($isAdmin)
+                <a href="{{ route('orders.index') }}">Commandes</a>
+                <a href="{{ route('promo_codes.index') }}">Codes promo</a>
             @endif
-        </div>
-    </div>
-</nav>
+        </nav>
+    </header>
 
-<!-- Login Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="loginModalLabel">Connexion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+    <main class="ds-main">
+        @yield('content')
+    </main>
+
+    <footer class="ds-footer">
+        <div class="ds-container ds-footer__grid">
+            <div class="ds-footer__col" style="gap:12px">
+                <span class="ds-footer__brand"><span class="ds-logo__mark"></span><span>Myshop</span></span>
+                <p style="line-height:1.7">Bijoux délicats en plaqué or.<br>Livraison partout au Maroc.</p>
             </div>
-            <div class="modal-body">
-                <!-- Login Form -->
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-
-                    <!-- Email Address -->
-                    <div class="mb-3">
-                        <input type="email" id="email" class="form-control" name="email" placeholder="E-mail" :value="old('email')" required autofocus autocomplete="username" />
-                        <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                    </div>
-
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <input type="password" id="password" class="form-control" name="password" placeholder="Mot de passe" required autocomplete="current-password" />
-                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                    </div>
-
-                    <!-- Remember Me -->
-                    <div class="form-check mb-3">
-                        <input type="checkbox" class="form-check-input" id="remember_me" name="remember">
-                        <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
-                </form>
-
-                <!-- Forgot Password Link -->
-                <div class="text-center mt-3">
-                    @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="btn btn-link">Mot de passe oublié ?</a>
-                    @endif
-                </div>
-
-                <!-- Register Link -->
-                <div class="text-center mt-3">
-                    <a href="{{ route('register') }}" class="btn btn-link">Pas de compte ? Inscrivez-vous</a>
-                </div>
+            <div class="ds-footer__col">
+                <span class="ds-footer__title">Boutique</span>
+                <a href="{{ route('products.index') }}">Tous les produits</a>
+                <a href="{{ route('products.popular') }}">Articles populaires</a>
+                <a href="{{ route('products.new-arrivals') }}">Nouveautés</a>
+            </div>
+            <div class="ds-footer__col">
+                <span class="ds-footer__title">Myshop</span>
+                <a href="{{ route('about') }}">À propos</a>
+                <a href="{{ auth()->check() ? route('my-orders.index') : route('login') }}">Mon compte</a>
+                <a href="{{ route('cart') }}">Panier</a>
             </div>
         </div>
+        <div class="ds-container ds-footer__copy">Copyright &copy; Myshop 2024</div>
+    </footer>
+
+    <div class="ds-toast" id="dsToast" role="status" aria-live="polite" hidden>
+        <span id="dsToastText"></span>
+        <a href="{{ route('cart') }}">Voir le panier</a>
     </div>
 </div>
 
-
-
-
-    @endunless
-    
-
-    <!-- Main content -->
-    <main class="py-5">
-        @yield('content')
-    </main>
-    @unless(request()->routeIs('login'))
-    <!-- Footer visible sur tout le site -->
-    <footer class="py-5 bg-dark">
-        <div class="container">
-            <div class="row text-white-50 small">
-                <div class="col-md-4 mb-3">
-                    <h6 class="text-white">Myshop</h6>
-                    <p class="mb-0">Bijoux délicats en plaqué or.<br>Livraison partout au Maroc.</p>
-                </div>
-                <div class="col-md-4 mb-3 text-center">
-                    <a href="{{ route('about') }}" class="text-white text-decoration-none me-3">À propos</a>
-                    <a href="{{ route('products.index') }}" class="text-white text-decoration-none me-3">Boutique</a>
-                    <a href="{{ route('checkout') }}" class="text-white text-decoration-none">Panier</a>
-                </div>
-                <div class="col-md-4 mb-3 text-md-end">
-                    <p class="m-0">Copyright &copy; Myshop 2024</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-    @endunless
-    <!-- Bootstrap JS -->
+@hasSection('bootstrap')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ asset('js/scripts.js') }}"></script>
+@endif
+@stack('scripts')
 </body>
 </html>

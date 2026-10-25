@@ -19,6 +19,7 @@ class ProductSeeder extends Seeder
             [
                 'description' => 'Bague torsadee en plaqué or sertie de zircons. Finition brillante.',
                 'price' => 299.00,
+                'category' => 'Bagues',
                 'image' => 'images/produits/bague-torsadee-or.png',
             ]
         );
@@ -28,6 +29,7 @@ class ProductSeeder extends Seeder
             [
                 'description' => 'Collier chaine en plaqué or avec pendantif zircon. Fermoir sécurisé.',
                 'price' => 249.00,
+                'category' => 'Colliers',
                 'image' => 'images/produits/collier-or-zircon.png',
             ]
         );
@@ -37,6 +39,7 @@ class ProductSeeder extends Seeder
             [
                 'description' => "Collier délicat au design minimaliste, parfait pour compléter une tenue quotidienne ou élégante. Sa chaîne fine et sa finition dorée offrent un style discret et moderne.",
                 'price' => 299.00,
+                'category' => 'Colliers',
                 'image' => 'images/produits/collier-minimaliste-dore-18k.jpg',
             ]
         );
