@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-    @php $hero = $products->take(3); @endphp
+    @php
+        // Mosaïque : la grande image (1re) met en avant un collier si possible
+        $lead = $products->firstWhere('category', 'Colliers') ?? $products->first();
+        $hero = $lead ? collect([$lead])->merge($products->where('id', '!=', $lead->id))->take(3) : collect();
+        // Photo d'ambiance de l'encart « histoire » : déposer public/images/home-about.jpg
+        $storyImage = file_exists(public_path('images/home-about.jpg')) ? asset('images/home-about.jpg') : null;
+    @endphp
 
     <section class="ds-container ds-hero">
         <div class="ds-hero__grid">
@@ -41,13 +47,16 @@
 
     <section class="ds-container" style="padding-top:var(--ds-section);padding-bottom:var(--ds-section)">
         <div class="ds-story">
-            <div class="ds-stack">
+            <div class="ds-story__media">
+                @if ($storyImage)
+                    <img src="{{ $storyImage }}" alt="Bijoux Myshop" loading="lazy">
+                @endif
+            </div>
+            <div class="ds-story__body">
                 <p class="ds-eyebrow ds-eyebrow--wide">Myshop</p>
                 <h2 class="ds-h2">Des bijoux qui racontent votre histoire</h2>
-            </div>
-            <div class="ds-stack ds-stack--20">
                 <p class="ds-body">Bienvenue chez Myshop : des bijoux délicats en plaqué or, sertis de zircons, photographiés en fond blanc HD pour voir chaque détail. Livraison rapide au Maroc, paiement à la livraison, échange sous 7 jours.</p>
-                <a href="{{ route('about') }}" class="ds-link">Découvrir notre histoire</a>
+                <a href="{{ route('about') }}" class="ds-link" style="align-self:flex-start">Découvrir notre histoire</a>
             </div>
         </div>
     </section>
