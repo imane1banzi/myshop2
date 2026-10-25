@@ -2,8 +2,8 @@
 
 @section('content')
     <!-- Header-->
-    <header class="py-5">
-        <div class="container px-4 px-lg-5 my-5">
+    <header class="pt-4 pb-5">
+        <div class="container px-4 px-lg-5">
             <div class="text-center text-white">
                 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-indicators">

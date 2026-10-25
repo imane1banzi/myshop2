@@ -8,6 +8,21 @@ try {
 let discount = 0;
 let promoCodes = [];
 
+// Panier toujours exploitable même si le localStorage contient d'anciennes données
+function safeCart() {
+    return Array.isArray(cart) ? cart : [];
+}
+
+function cartItemPrice(item) {
+    const p = Number(item.price);
+    return isNaN(p) ? 0 : p;
+}
+
+function cartItemQty(item) {
+    const q = parseInt(item.quantity, 10);
+    return isNaN(q) || q < 0 ? 0 : q;
+}
+
 function saveCart() {
     try {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -17,6 +32,7 @@ function saveCart() {
 } 
 
 function addToCart(id, name, price, image) {
+    if (!Array.isArray(cart)) cart = [];
     const product = cart.find(item => item.id === id);
     if (product) {
         product.quantity++;
@@ -31,63 +47,107 @@ function addToCart(id, name, price, image) {
 function updateCartCount() {
     const cartBadge = document.getElementById('cartCountBadge');
     if (!cartBadge) return;
-    const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const totalQuantity = safeCart().reduce((sum, item) => sum + cartItemQty(item), 0);
     cartBadge.textContent = totalQuantity;
 }
 
 function updateTotalPrice() {
     const el = document.getElementById('totalPriceContainer');
     if (!el) return;
-    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0) * (1 - discount);
+    const totalPrice = safeCart().reduce((sum, item) => sum + cartItemPrice(item) * cartItemQty(item), 0) * (1 - discount);
     el.textContent = `Prix total : MAD ${totalPrice.toFixed(2)}`;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    const trigger = document.getElementById('cartModalTrigger');
+    if (trigger) trigger.addEventListener('click', openCartModal);
     updateCartCount();
     updateTotalPrice();
-    const trigger = document.getElementById('cartModalTrigger');
-    if (trigger) trigger.addEventListener('click', showCartItems);
 });
 
-function showCartItems() {
+// Ouverture du panier : rendu + affichage modale, la modale s'ouvre même si le rendu échoue
+function openCartModal() {
+    try {
+        renderCartItems();
+    } catch (e) {
+        console.warn('Rendu panier impossible.', e);
+    }
+    try {
+        updateTotalPrice();
+    } catch (e) {
+        console.warn('Total panier impossible.', e);
+    }
+    const modalEl = document.getElementById('shoppingCartModal');
+    if (modalEl && window.bootstrap) {
+        window.bootstrap.Modal.getOrCreateInstance(modalEl).show();
+    }
+}
+
+function renderCartItems() {
     const cartItemsContainer = document.getElementById('cartItemsContainer');
-    cartItemsContainer.innerHTML = cart.map(item => `
-        <div class="col-md-12">
-            <div class="card p-3 shadow-sm border-0 rounded-3">
-                <div class="row align-items-center">
-                    <div class="col-md-2"><img src="${item.image}" class="img-fluid rounded" alt="${item.name}"></div>
-                    <div class="col-md-3"><h6>${item.name}</h6><p class="text-muted">MAD ${item.price.toFixed(2)} par unité</p></div>
-                    <div class="col-md-3">
-                        <label class="form-label">Quantité</label>
-                        <input type="number" min="1" value="${item.quantity}" onchange="updateQuantity(${item.id}, this.value)" class="form-control form-control-sm text-center" />
+    if (!cartItemsContainer) return;
+    const items = safeCart();
+    if (items.length === 0) {
+        cartItemsContainer.innerHTML = `
+        <div class="col-12">
+            <div class="cart-empty">
+                <i class="bi bi-bag" style="font-size: 2.5rem;"></i>
+                <p class="mt-2 mb-3">Votre panier est vide.</p>
+                <a href="/products" class="btn btn-gold-solid rounded-pill px-4">Découvrir la boutique</a>
+            </div>
+        </div>`;
+        updateTotalPrice();
+        return;
+    }
+    cartItemsContainer.innerHTML = items.map(item => {
+        const price = cartItemPrice(item);
+        const qty = cartItemQty(item);
+        const img = item.image || '';
+        const name = item.name || '';
+        return `
+        <div class="col-12">
+            <div class="cart-item p-3 shadow-sm">
+                <div class="row align-items-center g-2">
+                    <div class="col-3 col-md-2"><img src="${img}" class="img-fluid rounded" alt="${name}" loading="lazy" decoding="async" style="max-height: 90px; width: 100%; object-fit: cover;"></div>
+                    <div class="col-9 col-md-4"><h6 class="item-name mb-1">${name}</h6><p class="price mb-0">MAD ${price.toFixed(2)} par unité</p></div>
+                    <div class="col-6 col-md-3">
+                        <label class="form-label small text-muted mb-1">Quantité</label>
+                        <input type="number" min="1" value="${qty}" onchange="updateQuantity(${item.id}, this.value)" class="form-control form-control-sm text-center" />
                     </div>
-                    <div class="col-md-3">
-                        <h6>Total : MAD ${(item.price * item.quantity).toFixed(2)}</h6>
+                    <div class="col-6 col-md-2 text-md-end">
+                        <div class="price">MAD ${(price * qty).toFixed(2)}</div>
                     </div>
-                    <div class="col-md-1">
-                        <button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})">Retirer</button>
+                    <div class="col-12 col-md-1 text-md-end">
+                        <button class="btn btn-outline-danger btn-sm rounded-pill" onclick="removeFromCart(${item.id})">Retirer</button>
                     </div>
                 </div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('');
     updateTotalPrice();
 }
 
+// Alias historique (quantité / suppression rechargent le contenu sans rouvrir la modale)
+function showCartItems() {
+    renderCartItems();
+}
+
 function updateQuantity(id, quantity) {
-    const product = cart.find(item => item.id === id);
+    const product = safeCart().find(item => item.id === id);
     if (product) {
-        product.quantity = parseInt(quantity, 10);
+        const q = parseInt(quantity, 10);
+        product.quantity = isNaN(q) || q < 1 ? 1 : q;
         saveCart();
         updateCartCount();
-        showCartItems();
+        renderCartItems();
     }
 }
 
 function removeFromCart(id) {
-    cart = cart.filter(item => item.id !== id);
+    cart = safeCart().filter(item => item.id !== id);
     saveCart();
-    showCartItems();
+    renderCartItems();
     updateCartCount();
     updateTotalPrice();
 }

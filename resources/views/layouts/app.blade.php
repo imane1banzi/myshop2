@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="{{ asset('js/cart.js') }}" defer></script>
+  <script src="{{ asset('js/cart.js') }}?v=4" defer></script>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
@@ -12,6 +12,36 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Police élégante pour le logo -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+            <style>
+        .brand-logo { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 1.6rem; letter-spacing: 2px; }
+        .navbar-icon-btn { width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 50% !important; font-size: 1.25rem; padding: 0 !important; }
+        .btn-gold { color: #b8860b; border-color: #c9a227; background-color: transparent; }
+        .btn-gold:hover, .btn-gold:focus { color: #fff; background-color: #b8860b; border-color: #b8860b; }
+        .btn-gold-solid { background: linear-gradient(135deg, #b8860b, #d4a017); border: none; color: #fff; font-weight: 600; }
+        .btn-gold-solid:hover, .btn-gold-solid:focus { color: #fff; filter: brightness(1.06); box-shadow: 0 4px 12px rgba(184,134,11,.4); }
+        .cart-header { background: linear-gradient(135deg, #9a6b0f, #c9a227 60%, #e6c15a); }
+        .cart-title { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; letter-spacing: 1px; }
+        .cart-body-bg { background: #faf7f0; }
+        #totalPriceContainer { font-family: 'Playfair Display', Georgia, serif; font-size: 1.35rem; color: #8a5f0b; }
+        .cart-item { border: 1px solid #ead9a8; border-left: 4px solid #c9a227; border-radius: .9rem; background: #fff; }
+        .cart-item .price { color: #9a6b0f; font-weight: 700; }
+        .cart-item .item-name { font-family: 'Playfair Display', Georgia, serif; }
+        .cart-empty { text-align: center; padding: 2.5rem 1rem; color: #8a6d2b; }
+        .promo-card { background: #fff; border: 1px dashed #c9a227; border-radius: .9rem; }
+        @media (max-width: 576px) {
+            #shoppingCartModal .modal-body { max-height: 70vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+            .cart-item img { max-height: 64px !important; }
+            #totalPriceContainer { font-size: 1.1rem; }
+        }
+        .link-gold { color: #9a6b0f; text-decoration: none; font-weight: 500; }
+        .link-gold:hover { color: #7a5208; text-decoration: underline; }
+        .auth-input { border-radius: .6rem; border: 1px solid #e0d3ac; }
+        .auth-input:focus { border-color: #c9a227; box-shadow: 0 0 0 .2rem rgba(201,162,39,.2); }
+    </style>
     <!-- Custom styles -->
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
 </head>
@@ -20,9 +50,38 @@
  <!-- Navigation-->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container px-4 px-lg-5">
-        <a class="navbar-brand" href="{{ route('welcomepage') }}">Myshop</a>
+        <a class="navbar-brand brand-logo" href="{{ route('welcomepage') }}">Myshop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Basculer la navigation"><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <!-- Icônes tout à droite de la navbar : panier + authentification (toujours visibles) -->
+        <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
+            <!-- Cart Button (ouverture gérée en JS : openCartModal) -->
+            <button class="btn btn-gold position-relative navbar-icon-btn" type="button" id="cartModalTrigger" title="Panier" aria-label="Ouvrir le panier">
+                <i class="bi bi-bag-fill"></i>
+                <span id="cartCountBadge" class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+            </button>
+            <!-- Authentication Buttons -->
+            @if (Auth::check())
+                {{-- Client : son nom / Admin : son nom + Admin --}}
+                @if(auth()->user()->isAdmin())
+                    <span class="badge bg-danger">{{ auth()->user()->name }} — Admin</span>
+                @else
+                    <span class="badge bg-success">{{ auth()->user()->name }}</span>
+                @endif
+                <!-- Logout Button -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="btn btn-gold navbar-icon-btn" type="submit" title="Déconnexion" aria-label="Se déconnecter">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            @else
+                <!-- Login Button -->
+                <button type="button" class="btn btn-gold navbar-icon-btn" data-bs-toggle="modal" data-bs-target="#loginModal" title="Connexion" aria-label="Se connecter">
+                    <i class="bi bi-person-circle"></i>
+                </button>
+            @endif
+        </div>
+        <div class="collapse navbar-collapse order-lg-2" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                 <li class="nav-item"><a class="nav-link active" aria-current="page" href="{{ route('welcomepage') }}">Accueil</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ route('about') }}">À propos</a></li>
@@ -45,100 +104,70 @@
                         <li class="nav-item"><a class="nav-link" href="{{ route('my-orders.index') }}">Mes commandes</a></li>
                     @endif
                 @endauth
-            
-            <!-- Cart Button -->
-            <button class="btn btn-outline-dark position-relative" type="button" id="cartModalTrigger" data-bs-toggle="modal" data-bs-target="#shoppingCartModal">
-                <i class="bi-cart-fill me-1"></i>
-                Panier
-                <span id="cartCountBadge" class="badge bg-danger text-white ms-1 rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
-            </button>
-            
-            <!-- Cart Modal -->
-            <div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header bg-dark text-white">
-                            <h5 class="modal-title" id="shoppingCartModalLabel">Panier</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="cartItemsContainer" class="row g-3">
-                                <!-- Les détails du panier seront ajoutés ici dynamiquement avec JavaScript -->
-                            </div>
-                            <div id="totalPriceContainer" class="text-end fw-bold mt-4 fs-5">
-                                Prix total : MAD 0
-                            </div>
-                            <div class="d-flex justify-content-end mt-3">
-                                <!-- Promo Code Section -->
-                                <div class="mb-3">
-                                    <label for="promoCodeInput" class="form-label">Code promo</label>
-                                    <div class="input-group">
-                                        <input type="text" id="promoCodeInput" class="form-control" placeholder="Saisissez votre code promo">
-                                        <button class="btn btn-success" onclick="applyPromoCode()">Appliquer</button>
-                                        <button class="btn btn-outline-danger" onclick="removePromoCode()" id="removePromoBtn" style="display: none;">Retirer le code promo</button>
-                                        <button class="btn btn-primary" onclick="proceedToCheckout()">Passer commande</button>
-                                    </div>
-                                    <small id="promoFeedback" class="form-text"></small>
-                                </div>
-                                
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
 
-            <!-- Authentication Buttons -->
-            @if (Auth::check())
-                {{-- Client : son nom / Admin : son nom + Admin --}}
-                @if(auth()->user()->isAdmin())
-                    <span class="badge bg-danger ms-3">{{ auth()->user()->name }} — Admin</span>
-                @else
-                    <span class="badge bg-success ms-3">{{ auth()->user()->name }}</span>
-                @endif
-                <!-- Logout Button -->
-                <form method="POST" action="{{ route('logout') }}" class="ms-3">
-                    @csrf
-                    <button class="btn btn-outline-dark" type="submit">
-                        <i class="bi-box-arrow-right me-1"></i>
-                        Déconnexion
-                    </button>
-                </form>
-            @else
-                {{-- Invité : rien, juste Login --}}
-                <!-- Login Button -->
-                <button class="btn btn-outline-dark ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">
-                    <i class="bi-box-arrow-in-right me-1"></i>
-                    Connexion
-                </button>
-            @endif
         </div>
     </div>
 </nav>
 
+<!-- Cart Modal (hors navbar : une modale dans un conteneur display:none ne peut pas s'afficher) -->
+<div class="modal fade" id="shoppingCartModal" tabindex="-1" aria-labelledby="shoppingCartModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 overflow-hidden" style="border-radius: 1rem;">
+            <div class="modal-header cart-header text-white border-0">
+                <h5 class="modal-title cart-title" id="shoppingCartModalLabel"><i class="bi bi-bag-fill me-2"></i>Panier</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body p-4 cart-body-bg">
+                <div id="cartItemsContainer" class="row g-3">
+                    <!-- Les détails du panier seront ajoutés ici dynamiquement avec JavaScript -->
+                </div>
+                <hr style="border-top: 1px solid #c9a227; opacity: .5;">
+                <div class="row g-3 align-items-stretch">
+                    <div class="col-md-7">
+                        <div class="promo-card p-3 h-100">
+                            <label for="promoCodeInput" class="form-label fw-semibold mb-2"><i class="bi bi-ticket-perforated me-1"></i>Code promo</label>
+                            <div class="input-group">
+                                <input type="text" id="promoCodeInput" class="form-control" placeholder="Saisissez votre code promo">
+                                <button class="btn btn-success" onclick="applyPromoCode()">Appliquer</button>
+                            </div>
+                            <small id="promoFeedback" class="form-text"></small>
+                            <button class="btn btn-outline-danger btn-sm rounded-pill mt-2" onclick="removePromoCode()" id="removePromoBtn" style="display: none;">Retirer le code promo</button>
+                        </div>
+                    </div>
+                    <div class="col-md-5 d-flex flex-column justify-content-between text-md-end">
+                        <div id="totalPriceContainer" class="fw-bold mb-3">
+                            Prix total : MAD 0
+                        </div>
+                        <button class="btn btn-gold-solid rounded-pill px-4 py-2" onclick="proceedToCheckout()"><i class="bi bi-bag-check me-1"></i>Passer commande</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Login Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="loginModalLabel">Connexion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        <div class="modal-content border-0 overflow-hidden" style="border-radius: 1rem;">
+            <div class="modal-header cart-header text-white border-0">
+                <h5 class="modal-title cart-title" id="loginModalLabel"><i class="bi bi-person-circle me-2"></i>Connexion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4 cart-body-bg">
                 <!-- Login Form -->
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
                     <!-- Email Address -->
                     <div class="mb-3">
-                        <input type="email" id="email" class="form-control" name="email" placeholder="E-mail" :value="old('email')" required autofocus autocomplete="username" />
+                        <input type="email" id="email" class="form-control auth-input" name="email" placeholder="E-mail" :value="old('email')" required autofocus autocomplete="username" />
                         <x-input-error :messages="$errors->get('email')" class="mt-2" />
                     </div>
 
                     <!-- Password -->
                     <div class="mb-3">
-                        <input type="password" id="password" class="form-control" name="password" placeholder="Mot de passe" required autocomplete="current-password" />
+                        <input type="password" id="password" class="form-control auth-input" name="password" placeholder="Mot de passe" required autocomplete="current-password" />
                         <x-input-error :messages="$errors->get('password')" class="mt-2" />
                     </div>
 
@@ -149,19 +178,19 @@
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                    <button type="submit" class="btn btn-gold-solid rounded-pill w-100 py-2">Se connecter</button>
                 </form>
 
                 <!-- Forgot Password Link -->
                 <div class="text-center mt-3">
                     @if (Route::has('password.request'))
-                        <a href="{{ route('password.request') }}" class="btn btn-link">Mot de passe oublié ?</a>
+                        <a href="{{ route('password.request') }}" class="btn btn-link link-gold">Mot de passe oublié ?</a>
                     @endif
                 </div>
 
                 <!-- Register Link -->
                 <div class="text-center mt-3">
-                    <a href="{{ route('register') }}" class="btn btn-link">Pas de compte ? Inscrivez-vous</a>
+                    <a href="{{ route('register') }}" class="btn btn-link link-gold">Pas de compte ? Inscrivez-vous</a>
                 </div>
             </div>
         </div>
